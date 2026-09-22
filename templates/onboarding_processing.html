@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing... - DiabetesAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-body: #f8f9fc; --primary: #3b82f6; --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 60px 20px; display: flex; align-items: center; justify-content: center; height: 100vh; margin:0; }
+        .container { max-width: 500px; width:100%; background: #fff; padding: 40px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center; }
+        h1 { font-size: 24px; margin-bottom: 32px; }
+        .step { display: flex; align-items: center; justify-content: flex-start; gap: 12px; font-size: 15px; margin-bottom: 16px; font-weight: 500; text-align: left; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
+        .step.active { opacity: 1; transform: translateY(0); }
+        .icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
+        .icon-check { background: #10b981; color: #fff; }
+        .icon-wait { background: #e2e8f0; color: transparent; border: 2px solid #cbd5e1; box-sizing: border-box; }
+        .icon-circle { border: 2px solid #cbd5e1; border-radius: 50%; width: 20px; height: 20px; box-sizing: border-box; }
+        .spinner { border: 2px solid rgba(59,130,246,0.3); border-top: 2px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preparing your personalized dashboard...</h1>
+        
+        <div style="max-width: 300px; margin: 0 auto;">
+            <div class="step" id="s1">
+                <div class="icon spinner" id="i1"></div>
+                Profile information saved
+            </div>
+            <div class="step" id="s2">
+                <div class="icon icon-wait" id="i2"></div>
+                Health history processed
+            </div>
+            <div class="step" id="s3">
+                <div class="icon icon-wait" id="i3"></div>
+                Baseline calculated
+            </div>
+            <div class="step" id="s4">
+                <div class="icon icon-wait" id="i4"></div>
+                Health trends prepared
+            </div>
+            <div class="step" id="s5">
+                <div class="icon icon-circle"></div>
+                <span style="color:var(--primary); font-weight:600;">GRU forecasting model — Initializing personalized inference</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple artificial delay for visual feedback
+        setTimeout(() => { document.getElementById('s1').classList.add('active'); }, 100);
+        setTimeout(() => { 
+            document.getElementById('i1').className = 'icon icon-check'; 
+            document.getElementById('i1').innerHTML = '✓';
+            document.getElementById('s2').classList.add('active');
+            document.getElementById('i2').className = 'icon spinner';
+        }, 1000);
+        setTimeout(() => { 
+            document.getElementById('i2').className = 'icon icon-check'; 
+            document.getElementById('i2').innerHTML = '✓';
+            document.getElementById('s3').classList.add('active');
+            document.getElementById('i3').className = 'icon spinner';
+        }, 2000);
+        setTimeout(() => { 
+            document.getElementById('i3').className = 'icon icon-check'; 
+            document.getElementById('i3').innerHTML = '✓';
+            document.getElementById('s4').classList.add('active');
+            document.getElementById('i4').className = 'icon spinner';
+        }, 3000);
+        setTimeout(() => { 
+            document.getElementById('i4').className = 'icon icon-check'; 
+            document.getElementById('i4').innerHTML = '✓';
+            document.getElementById('s5').classList.add('active');
+        }, 4000);
+        setTimeout(() => { 
+            window.location.href = '/dashboard';
+        }, 5500);
+    </script>
+</body>
+</html>

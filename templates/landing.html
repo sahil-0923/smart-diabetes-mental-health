@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabetesAI - AI Health Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0891b2;
+            --accent: #9333ea;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --bg-nav: rgba(255, 255, 255, 0.9);
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Nav */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: var(--bg-nav);
+            backdrop-filter: blur(10px);
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .logo {
+            font-size: 24px; font-weight: 700; color: var(--text-dark);
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 15px; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        .btn {
+            background: var(--primary); color: #fff; padding: 12px 24px;
+            border-radius: 8px; font-weight: 600; text-decoration: none;
+            display: inline-block; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-outline:hover { background: rgba(37,99,235,0.05); }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex; align-items: center;
+            padding: 120px 5% 60px;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(37,99,235,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(147,51,234,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(8,145,178,0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero-grid { background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 40px 40px; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.5; z-index: -2; }
+
+        .hero-container {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 40px; max-width: 1280px; margin: 0 auto; width: 100%;
+        }
+
+        .hero-content { display: flex; flex-direction: column; justify-content: center; }
+        
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(37,99,235,0.1); color: var(--primary);
+            padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+            margin-bottom: 24px; width: fit-content;
+        }
+
+        .hero-content h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1px; }
+        .hero-content h1 span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-content p { font-size: 18px; color: var(--text-muted); margin-bottom: 32px; max-width: 540px; line-height: 1.7; }
+        
+        .hero-btns { display: flex; gap: 16px; }
+
+        .hero-visual { position: relative; display: flex; justify-content: center; align-items: center; }
+        .hero-visual img { max-width: 100%; height: auto; border-radius: 20px; animation: float 6s ease-in-out infinite; mix-blend-mode: multiply; }
+        
+        /* Floating Data Cards */
+        .float-card {
+            position: absolute; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+            padding: 12px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.5); font-size: 14px; font-weight: 600;
+            display: flex; flex-direction: column; gap: 4px; z-index: 2;
+        }
+        .float-card span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 500; }
+        .fc-1 { top: 15%; right: 10%; animation: float 5s ease-in-out infinite 1s; }
+        .fc-2 { bottom: 25%; left: 5%; animation: float 7s ease-in-out infinite 2s; }
+        .fc-3 { bottom: 15%; right: 5%; animation: float 6s ease-in-out infinite 0.5s; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* Trust Strip */
+        .trust-strip {
+            display: flex; justify-content: center; gap: 40px; padding: 40px 5%;
+            background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            flex-wrap: wrap; color: var(--text-muted); font-weight: 500; font-size: 15px;
+        }
+        .trust-item { display: flex; align-items: center; gap: 8px; }
+
+        /* General Section */
+        .section { padding: 100px 5%; max-width: 1280px; margin: 0 auto; }
+        .section-center { text-align: center; max-width: 800px; margin: 0 auto 60px; }
+        .section h2 { font-size: 40px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; }
+        .section p.sub { font-size: 18px; color: var(--text-muted); line-height: 1.6; }
+
+        /* How it Works */
+        .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; }
+        .timeline-step { background: #fff; padding: 32px 24px; border-radius: 16px; border: 1px solid var(--border); position: relative; z-index: 2; }
+        .step-num { font-size: 48px; font-weight: 800; color: rgba(37,99,235,0.1); margin-bottom: 12px; line-height: 1; }
+        .timeline-step h3 { font-size: 18px; margin-bottom: 8px; }
+
+        /* Features */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        .feature-card { background: #fff; padding: 40px 32px; border-radius: 20px; border: 1px solid var(--border); transition: transform 0.3s; position: relative; overflow: hidden; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
+        .f-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(37,99,235,0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+        .feature-card h3 { font-size: 20px; margin-bottom: 12px; }
+        .feature-card p { color: var(--text-muted); font-size: 15px; }
+        
+        .ai-badge {
+            position: absolute; top: 20px; right: 20px; background: rgba(147,51,234,0.1); color: var(--accent);
+            font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 12px; letter-spacing: 0.5px;
+        }
+
+        /* Visual Showcase */
+        .showcase { background: linear-gradient(to bottom, #fff, #f8fafc); padding: 100px 5%; border-top: 1px solid var(--border); }
+        .showcase-container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; max-width: 1280px; margin: 0 auto; align-items: center; }
+        .showcase-img img { width: 100%; border-radius: 24px; mix-blend-mode: multiply; }
+        
+        /* Concept Flow */
+        .concept-flow { display: flex; align-items: center; justify-content: space-between; margin-top: 40px; background: #fff; padding: 40px; border-radius: 20px; border: 1px solid var(--border); overflow-x: auto;}
+        .cf-node { text-align: center; }
+        .cf-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--text-muted); }
+        .cf-node h4 { font-size: 14px; font-weight: 600; }
+        .cf-arrow { color: var(--border); }
+        
+        .cf-ai .cf-icon { background: rgba(147,51,234,0.05); border-color: rgba(147,51,234,0.2); color: var(--accent); }
+        .cf-ai h4 { color: var(--accent); }
+
+        /* Disclaimer */
+        .disclaimer { max-width: 800px; margin: 60px auto 0; background: #fffbeb; padding: 24px; border-radius: 12px; border: 1px solid #fde68a; display: flex; gap: 16px; font-size: 14px; color: #92400e; }
+
+        /* CTA */
+        .cta-section { text-align: center; padding: 120px 5%; background: #0f172a; color: #fff; }
+        .cta-section h2 { font-size: 48px; margin-bottom: 24px; }
+        .cta-section p { font-size: 20px; color: #94a3b8; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* Footer */
+        footer { padding: 80px 5% 40px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.1); color: #94a3b8; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; max-width: 1280px; margin: 0 auto 60px; }
+        .footer-brand h3 { color: #fff; font-size: 24px; margin-bottom: 16px; }
+        .footer-grid h4 { color: #fff; font-size: 16px; margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: #fff; }
+        .footer-bottom { text-align: center; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
+
+        /* Reveal animations */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1024px) {
+            .hero-container, .showcase-container { grid-template-columns: 1fr; text-align: center; }
+            .hero-content { align-items: center; }
+            .hero-visual { order: -1; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .timeline { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 40px; }
+            .features-grid, .timeline, .footer-grid { grid-template-columns: 1fr; }
+            .trust-strip { flex-direction: column; text-align: center; }
+            .concept-flow { flex-direction: column; gap: 24px; }
+            .cf-arrow { transform: rotate(90deg); }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="logo">
+            <i data-feather="activity" style="color: var(--primary);"></i>
+            DiabetesAI
+        </a>
+        <div class="nav-links">
+            <a href="/login">Login</a>
+            <a href="/register" class="btn" style="padding: 10px 20px;">Get Started</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-container">
+            <div class="hero-content reveal">
+                <div class="badge"><i data-feather="cpu" style="width:14px;"></i> AI-POWERED HEALTH MONITORING</div>
+                <h1>Understand Your Health.<br><span>Before the Risk.</span></h1>
+                <p>Monitor glucose, lifestyle, sleep, stress and wellness in one intelligent platform — and discover changing health patterns over time.</p>
+                <div class="hero-btns">
+                    <a href="/register" class="btn">Get Started</a>
+                    <a href="/login" class="btn btn-outline">Login</a>
+                </div>
+            </div>
+            <div class="hero-visual reveal">
+                <div class="float-card fc-1">
+                    <span>Glucose</span>
+                    <div style="color:var(--primary); font-size: 20px;">115 <span style="font-size:12px; color:var(--text-muted);">mg/dL</span></div>
+                    <div style="font-size:10px; color:var(--text-muted);">ILLUSTRATIVE UI</div>
+                </div>
+                <div class="float-card fc-2">
+                    <span>Sleep Quality</span>
+                    <div style="color:var(--accent); font-size: 20px;">7.2 <span style="font-size:12px; color:var(--text-muted);">hrs</span></div>
+                </div>
+                <div class="float-card fc-3">
+                    <span>Stress Level</span>
+                    <div style="color:var(--secondary); font-size: 20px;">4.0 <span style="font-size:12px; color:var(--text-muted);">/ 10</span></div>
+                </div>
+                <img src="{{ url_for('static', filename='images/hero_visual.jpg') }}" alt="AI Healthcare Visualization">
+            </div>
+        </div>
+    </section>
+
+    <div class="trust-strip">
+        <div class="trust-item"><i data-feather="droplet"></i> Glucose Monitoring</div>
+        <div class="trust-item"><i data-feather="watch"></i> Lifestyle Tracking</div>
+        <div class="trust-item"><i data-feather="trending-up"></i> Risk Trends</div>
+        <div class="trust-item"><i data-feather="heart"></i> Mental Wellness</div>
+        <div class="trust-item"><i data-feather="cpu"></i> AI Forecasting</div>
+    </div>
+
+    <section class="section showcase">
+        <div class="showcase-container">
+            <div class="showcase-img reveal">
+                <img src="{{ url_for('static', filename='images/showcase_visual.jpg') }}" alt="Holistic Health Mapping" loading="lazy">
+            </div>
+            <div class="reveal">
+                <h2>Your Health Is More Than One Number.</h2>
+                <p class="sub" style="margin-bottom: 24px;">DiabetesAI combines multiple health and lifestyle signals to help reveal patterns that a single glucose reading cannot show.</p>
+                <p class="sub">Explore how your sleep, stress, activity, exercise, and overall lifestyle move alongside your glucose history over time.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-center reveal">
+            <h2>How It Works</h2>
+            <p class="sub">DiabetesAI is designed to help users understand glucose patterns holistically.</p>
+        </div>
+        <div class="timeline reveal">
+            <div class="timeline-step">
+                <div class="step-num">01</div>
+                <h3>Create Your Profile</h3>
+                <p style="color:var(--text-muted); font-size:15px;">Build your baseline with demographics and historical health context.</p>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">02</div>
+                <h3>Track Your Health</h3>
+                <p style="color:var(--text-muted); font-size:15px;">Log daily glucose alongside sleep, stress, and lifestyle metrics.</p>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">03</div>
+                <h3>Analyze Patterns</h3>
+                <p style="color:var(--text-muted); font-size:15px;">Use interactive multi-axis charts to find hidden correlations.</p>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">04</div>
+                <h3>Early Insights</h3>
+                <p style="color:var(--text-muted); font-size:15px;">Understand health trends and track wellness trajectories over time.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: #fff; border-top: 1px solid var(--border);">
+        <div class="section-center reveal">
+            <h2>Platform Features</h2>
+            <p class="sub">Everything you need to map your digital health journey.</p>
+        </div>
+        <div class="features-grid reveal">
+            <div class="feature-card">
+                <div class="f-icon"><i data-feather="activity"></i></div>
+                <h3>Glucose Monitoring</h3>
+                <p>Track glucose readings over time instead of relying on a single measurement.</p>
+            </div>
+            <div class="feature-card">
+                <div class="ai-badge">COMING WITH AI MODEL</div>
+                <div class="f-icon" style="background: rgba(147,51,234,0.1); color: var(--accent);"><i data-feather="cpu"></i></div>
+                <h3>AI Glucose Forecast</h3>
+                <p>Future glucose forecasting powered by a GRU deep-learning model using historical data.</p>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon" style="background: rgba(8,145,178,0.1); color: var(--secondary);"><i data-feather="trending-up"></i></div>
+                <h3>Risk Trends</h3>
+                <p>Understand changing health indicators and overall wellness trajectory over time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon" style="background: rgba(16,185,129,0.1); color: var(--success);"><i data-feather="smile"></i></div>
+                <h3>Mental Wellness</h3>
+                <p>Track sleep, stress, mood, and activity patterns to see how they impact physical health.</p>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon" style="background: rgba(245,158,11,0.1); color: #d97706;"><i data-feather="sliders"></i></div>
+                <h3>What-If Simulation</h3>
+                <p>Explore how lifestyle changes may influence predicted glucose responses (Coming soon).</p>
+            </div>
+            <div class="feature-card">
+                <div class="f-icon"><i data-feather="pie-chart"></i></div>
+                <h3>Personalized Insights</h3>
+                <p>Turn your historical health information into understandable and actionable trends.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section showcase">
+        <div class="section-center reveal">
+            <h2>From Tracking to Early Warning</h2>
+            <p class="sub">Our deep-learning models analyze massive contextual datasets to build personalized patterns.</p>
+        </div>
+        
+        <div class="concept-flow reveal">
+            <div class="cf-node">
+                <div class="cf-icon"><i data-feather="database"></i></div>
+                <h4>Historical Data</h4>
+            </div>
+            <i data-feather="arrow-right" class="cf-arrow"></i>
+            <div class="cf-node">
+                <div class="cf-icon"><i data-feather="search"></i></div>
+                <h4>Pattern Detection</h4>
+            </div>
+            <i data-feather="arrow-right" class="cf-arrow"></i>
+            <div class="cf-node cf-ai">
+                <div class="cf-icon"><i data-feather="cpu"></i></div>
+                <h4>Deep Learning</h4>
+            </div>
+            <i data-feather="arrow-right" class="cf-arrow"></i>
+            <div class="cf-node">
+                <div class="cf-icon"><i data-feather="bar-chart-2"></i></div>
+                <h4>Glucose Forecast</h4>
+            </div>
+            <i data-feather="arrow-right" class="cf-arrow"></i>
+            <div class="cf-node">
+                <div class="cf-icon" style="background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.2); color: var(--primary);"><i data-feather="bell"></i></div>
+                <h4 style="color:var(--primary);">Early-Warning</h4>
+            </div>
+        </div>
+
+        <div class="disclaimer reveal">
+            <i data-feather="shield" style="flex-shrink: 0; margin-top: 2px;"></i>
+            <div>
+                <strong>Important Safety Notice:</strong> DiabetesAI is an educational and health-monitoring platform. AI-generated insights are intended for informational purposes only and are not medical advice, diagnosis, or a substitute for professional medical care.
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="reveal">
+            <h2>Start Understanding Your Health</h2>
+            <p>Create your profile and begin building your personal health history today.</p>
+            <div style="display:flex; gap:16px; justify-content:center;">
+                <a href="/register" class="btn" style="background:#fff; color:#0f172a;">GET STARTED</a>
+                <a href="/login" class="btn btn-outline" style="border-color:rgba(255,255,255,0.3); color:#fff;">LOGIN</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3><i data-feather="activity" style="display:inline-block; vertical-align:middle; margin-right:8px;"></i>DiabetesAI</h3>
+                <p>AI-Based Diabetes Complication Early-Warning System</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Glucose Monitor</a></li>
+                    <li><a href="#">AI Forecast</a></li>
+                    <li><a href="#">Risk Trends</a></li>
+                    <li><a href="#">Mental Wellness</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Emergency Help</a></li>
+                    <li><a href="#">Health Profile</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 DiabetesAI Research Project. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+
+        // Scroll reveal animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>

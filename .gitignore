@@ -1,0 +1,22 @@
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache & build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# SQLite databases (optional, or comment out if you want initial db committed)
+# *.db
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

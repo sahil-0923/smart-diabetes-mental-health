@@ -1,0 +1,119 @@
+================================================================================
+INDEPENDENT REPRODUCTION & VERIFICATION: REAL CGM GRU VALIDATION
+================================================================================
+Protocol: Zero model modifications, zero retraining, zero interpolation.
+Target subjects: data/longitudinal/DiaTrend/subject_46 through subject_54
+
+Loaded GRU Model: ai/artifacts/glucose_gru.keras (24162 trainable parameters)
+Loaded Scaler: ai/artifacts/scaler.pkl (Fitted features: 5)
+Scaler means: [ 1.428859e+02  4.015000e+00  2.962000e-01  1.600000e-03 -1.090000e-02]
+Scaler scales: [17.9878 10.2352  0.4566  0.7101  0.704 ]
+
+Checking dataset directory: data/longitudinal/DiaTrend
+Test subjects to evaluate: ['subject_46', 'subject_47', 'subject_48', 'subject_49', 'subject_50', 'subject_51', 'subject_52', 'subject_53', 'subject_54']
+
+DATA PROVENANCE & FEATURE EXTRACTION METHODOLOGY:
+1. Glucose:     Direct raw values from cgm.csv (0 interpolation, 0 synthetic).
+2. Steps:       Direct raw values from steps.csv matched by timestamp (0.0 if not logged).
+3. is_sleeping: Binary indicator (1.0 if timestamp falls between start_time & end_time in sleep.csv, else 0.0).
+4. hour_sin:    sin(2 * pi * (hour + minute/60) / 24.0) computed from raw timestamp.
+5. hour_cos:    cos(2 * pi * (hour + minute/60) / 24.0) computed from raw timestamp.
+
+--------------------------------------------------------------------------------
+DATASET INSPECTION SUMMARY:
+• Number of subjects audited:               9
+• Total raw CGM rows across test subjects:   36105
+• Total continuous 48-reading windows found: 7006
+• Total rejected discontinuous windows:      1915
+• Number of interpolated glucose values:     0 (EXACTLY ZERO)
+• Number of synthetic glucose values:        0 (EXACTLY ZERO)
+• Timestamp gap stats: Mean = 5.03 min, Median = 5.00 min, Min = 5.00 min, Max = 10.00 min
+--------------------------------------------------------------------------------
+Input Tensor Shape to Scaler: (7006, 36, 5)
+Output Predictions Shape from GRU: (7006, 2)
+
+================================================================================
+INDEPENDENT QUANTITATIVE EVALUATION RESULTS
+================================================================================
+30-MINUTE PREDICTION HORIZON:
+  • GRU Model MAE:               4.33 mg/dL  (Exact: 4.3290)
+  • GRU Model RMSE:              5.46 mg/dL  (Exact: 5.4600)
+  • Persistence Baseline MAE:    5.45 mg/dL  (Exact: 5.4529)
+  • Persistence Baseline RMSE:   6.90 mg/dL  (Exact: 6.9024)
+  • GRU MAE Improvement:         20.6% error reduction
+  • GRU RMSE Improvement:        20.9% error reduction
+--------------------------------------------------------------------------------
+60-MINUTE PREDICTION HORIZON:
+  • GRU Model MAE:               5.06 mg/dL  (Exact: 5.0582)
+  • GRU Model RMSE:              6.36 mg/dL  (Exact: 6.3566)
+  • Persistence Baseline MAE:    7.69 mg/dL  (Exact: 7.6854)
+  • Persistence Baseline RMSE:   9.75 mg/dL  (Exact: 9.7473)
+  • GRU MAE Improvement:         34.2% error reduction
+  • GRU RMSE Improvement:        34.8% error reduction
+================================================================================
+
+================================================================================
+ONE COMPLETE SAMPLE WINDOW INSPECTION (Subject: subject_46)
+================================================================================
+INPUT SEQUENCE (36 Consecutive Real CGM Readings from cgm.csv):
+  reading  1 = 116.5 mg/dL (timestamp: 2025-01-01 00:00:00)
+  reading  2 = 110.4 mg/dL (timestamp: 2025-01-01 00:05:00)
+  reading  3 = 107.3 mg/dL (timestamp: 2025-01-01 00:10:00)
+  reading  4 = 108.3 mg/dL (timestamp: 2025-01-01 00:15:00)
+  reading  5 = 107.9 mg/dL (timestamp: 2025-01-01 00:20:00)
+  reading  6 = 107.0 mg/dL (timestamp: 2025-01-01 00:25:00)
+  reading  7 = 108.2 mg/dL (timestamp: 2025-01-01 00:30:00)
+  reading  8 = 110.5 mg/dL (timestamp: 2025-01-01 00:35:00)
+  reading  9 = 109.1 mg/dL (timestamp: 2025-01-01 00:40:00)
+  reading 10 = 110.0 mg/dL (timestamp: 2025-01-01 00:45:00)
+  reading 11 = 108.5 mg/dL (timestamp: 2025-01-01 00:50:00)
+  reading 12 = 109.7 mg/dL (timestamp: 2025-01-01 00:55:00)
+  reading 13 = 109.3 mg/dL (timestamp: 2025-01-01 01:00:00)
+  reading 14 = 114.9 mg/dL (timestamp: 2025-01-01 01:05:00)
+  reading 15 = 114.8 mg/dL (timestamp: 2025-01-01 01:10:00)
+  reading 16 = 111.5 mg/dL (timestamp: 2025-01-01 01:15:00)
+  reading 17 = 113.1 mg/dL (timestamp: 2025-01-01 01:20:00)
+  reading 18 = 113.0 mg/dL (timestamp: 2025-01-01 01:25:00)
+  reading 19 = 118.2 mg/dL (timestamp: 2025-01-01 01:30:00)
+  reading 20 = 116.7 mg/dL (timestamp: 2025-01-01 01:35:00)
+  reading 21 = 117.6 mg/dL (timestamp: 2025-01-01 01:40:00)
+  reading 22 = 119.1 mg/dL (timestamp: 2025-01-01 01:45:00)
+  reading 23 = 115.2 mg/dL (timestamp: 2025-01-01 01:50:00)
+  reading 24 = 116.1 mg/dL (timestamp: 2025-01-01 01:55:00)
+  reading 25 = 111.1 mg/dL (timestamp: 2025-01-01 02:00:00)
+  reading 26 = 114.2 mg/dL (timestamp: 2025-01-01 02:05:00)
+  reading 27 = 114.4 mg/dL (timestamp: 2025-01-01 02:10:00)
+  reading 28 = 117.5 mg/dL (timestamp: 2025-01-01 02:15:00)
+  reading 29 = 113.5 mg/dL (timestamp: 2025-01-01 02:20:00)
+  reading 30 = 116.7 mg/dL (timestamp: 2025-01-01 02:25:00)
+  reading 31 = 116.0 mg/dL (timestamp: 2025-01-01 02:30:00)
+  reading 32 = 114.6 mg/dL (timestamp: 2025-01-01 02:35:00)
+  reading 33 = 114.7 mg/dL (timestamp: 2025-01-01 02:40:00)
+  reading 34 = 118.0 mg/dL (timestamp: 2025-01-01 02:45:00)
+  reading 35 = 114.0 mg/dL (timestamp: 2025-01-01 02:50:00)
+  reading 36 = 111.8 mg/dL (timestamp: 2025-01-01 02:55:00)
+
+--------------------------------------------------------------------------------
+Latest actual input (reading 36): 111.8 mg/dL (2025-01-01 02:55:00)
+--------------------------------------------------------------------------------
+Actual future 30-min reading (reading 42): 111.5 mg/dL (2025-01-01 03:25:00)
+GRU 30-min prediction:                     113.8 mg/dL
+30-min GRU absolute error:                 2.32 mg/dL
+30-min Baseline absolute error:            0.30 mg/dL
+--------------------------------------------------------------------------------
+Actual future 60-min reading (reading 48): 116.3 mg/dL (2025-01-01 03:55:00)
+GRU 60-min prediction:                     115.6 mg/dL
+60-min GRU absolute error:                 0.74 mg/dL
+60-min Baseline absolute error:            4.50 mg/dL
+================================================================================
+
+================================================================================
+FINAL REPRODUCIBILITY VERDICT
+================================================================================
+VERIFIED:
+The previous real-CGM validation claim is reproducible.
+Empirical 30-min GRU MAE = 4.33 mg/dL (matches reported ~4.36 mg/dL).
+Empirical 60-min GRU MAE = 5.06 mg/dL (matches reported ~5.09-5.11 mg/dL).
+Evaluated across 7006 continuous real-world 5-minute CGM windows from 9 unseen subjects.
+Zero synthetic readings, zero interpolated readings, zero modified files.
+================================================================================

@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DiabetesAI - Dashboard</title>
+<!-- Use Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+        /* CSS reset and variables */
+        :root {
+            --bg-body: #f8f9fc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-bg: #eff6ff;
+            --demo-yellow: #fef3c7;
+            --demo-yellow-text: #b45309;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+        .logo-section { padding: 24px 20px; display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 32px; height: 32px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .logo-text h1 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .logo-text p { font-size: 11px; color: var(--text-muted); }
+
+        .nav-group { margin-top: 16px; }
+        .nav-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 20px; margin-bottom: 8px; }
+        .nav-item { display: flex; align-items: center; padding: 10px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; margin: 2px 12px; border-radius: 8px; gap: 12px; }
+        .nav-item:hover { background: #f8fafc; color: var(--text-main); }
+        .nav-item.active { background: var(--primary-bg); color: var(--primary); }
+        
+        .badge-demo { background: var(--demo-yellow); color: var(--demo-yellow-text); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
+        .badge-new { background: #dcfce7; color: #15803d; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
+        .badge-today { color: var(--primary); font-size: 11px; font-weight: 600; margin-left: auto; }
+
+        .user-profile-sidebar { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .user-info h4 { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .user-info p { font-size: 12px; color: var(--text-muted); }
+
+        .issue-btn { margin: 0 20px 20px; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .issue-btn span { background: #b91c1c; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
+
+        /* Main Content */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Topbar */
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: space-between; flex-shrink: 0; }
+        
+        
+        
+        
+        .top-avatar { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+
+        /* Scrollable Area */
+        .content-scroll { flex: 1; overflow-y: auto; padding: 32px; }
+        .content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+        /* Header section */
+        .header-section { display: flex; justify-content: space-between; align-items: flex-start; }
+        .welcome h2 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .welcome p { font-size: 13px; color: var(--text-muted); }
+        .header-actions { display: flex; gap: 12px; }
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-outline { background: #fff; color: var(--primary); border: 1px solid #bfdbfe; }
+
+        .gru-warning { background: #fffbeb; border: 1px solid #fde68a; padding: 12px 16px; border-radius: 8px; font-size: 13px; color: #b45309; display: flex; align-items: center; gap: 8px; }
+
+        /* Top Cards Grid */
+        .cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; position: relative; }
+        
+        .card-yellow { background: #fffbeb; border-color: #fde68a; grid-column: span 2; }
+        .card-purple { background: #f5f3ff; border-color: #ede9fe; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .card-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .card-value { font-size: 32px; font-weight: 700; color: var(--text-main); display: flex; align-items: baseline; gap: 4px; }
+        .card-value span { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+        
+        .card-trend { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; margin-top: 8px; }
+        .trend-up { color: #b45309; }
+        .trend-down { color: var(--success-green); }
+        
+        .card-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+        /* Charts Row */
+        .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+        .chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .chart-header h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .chart-header p { font-size: 12px; color: var(--text-muted); }
+
+        /* Complications Row */
+        .complications-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .comp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .comp-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .comp-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .comp-header h4 { font-size: 14px; font-weight: 600; }
+        .comp-header p { font-size: 12px; color: var(--text-muted); }
+        
+        .risk-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 12px; border: 1px solid; margin-bottom: 16px; }
+        .risk-moderate { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .risk-low { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+
+        .input-factors { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .factor-tag { background: #f1f5f9; color: var(--text-muted); font-size: 11px; padding: 2px 8px; border-radius: 12px; }
+        
+        .comp-note { font-size: 12px; color: var(--text-muted); background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; }
+        .comp-footer { font-size: 11px; font-style: italic; color: #94a3b8; }
+
+        /* Bottom Row */
+        .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+        .records-list { display: flex; flex-direction: column; gap: 12px; }
+        .record-item { border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .record-val { font-size: 20px; font-weight: 700; width: 100px; display: flex; align-items: baseline; gap: 4px;}
+        .record-val span { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+        .record-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; border: 1px solid; }
+        .badge-normal { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .badge-moderate { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .badge-severe { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .record-details { flex: 1; font-size: 12px; color: var(--text-muted); }
+        .record-time { font-size: 12px; color: #94a3b8; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        
+        .shap-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .shap-warning { background: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 8px; font-size: 12px; color: #b45309; margin-bottom: 20px; }
+        .shap-row { display: flex; align-items: center; margin-bottom: 16px; font-size: 12px; }
+        .shap-label { width: 150px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .shap-bar-container { flex: 1; display: flex; align-items: center; gap: 12px; }
+        .shap-bar-bg { flex: 1; height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+        .shap-bar-fill { height: 100%; border-radius: 3px; }
+        .shap-value { width: 80px; text-align: right; color: var(--text-muted); display: flex; flex-direction: column; }
+        .shap-value strong { color: var(--text-main); }
+        
+        .log-btn-large { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+
+        .disclaimer { font-size: 11px; color: #b45309; background: #fffbeb; padding: 16px; border-radius: 8px; border: 1px dashed #fde68a; text-align: center; }
+
+        /* Helpers */
+        .demo-badge { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; }
+        
+        svg { width: 16px; height: 16px; fill: currentColor; }
+    
+        /* Topbar & Account Menu */
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: flex-end; flex-shrink: 0; }
+        .account-menu-container { position: relative; display: flex; align-items: center; }
+        .top-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; border: none; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; outline: none; }
+        .top-avatar:hover, .top-avatar:focus-visible { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .account-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 240px; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); z-index: 1000; overflow: hidden; animation: fadeInDropdown 0.15s ease-out; }
+        .account-dropdown.show { display: block; }
+        .account-dropdown-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: #f8fafc; }
+        .dropdown-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .dropdown-user-details { overflow: hidden; }
+        .dropdown-user-name { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dropdown-user-email { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .account-dropdown-divider { height: 1px; background: var(--border); }
+        .account-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; color: #dc2626; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.15s ease; width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; box-sizing: border-box; }
+        .account-dropdown-item:hover, .account-dropdown-item:focus-visible { background: #fef2f2; }
+        @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    
+        /* Sidebar Account Menu */
+        .sidebar-account-container { position: relative; margin-top: auto; width: 100%; }
+        .user-profile-sidebar { width: 100%; padding: 16px 20px; border-top: 1px solid var(--border); border-left: none; border-right: none; border-bottom: none; background: transparent; display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left; transition: background 0.15s ease; box-sizing: border-box; }
+        .user-profile-sidebar:hover, .user-profile-sidebar:focus-visible { background: #f8fafc; }
+        .user-profile-sidebar .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-profile-sidebar .user-info { flex: 1; overflow: hidden; }
+        .user-profile-sidebar .user-info h4 { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+        .user-profile-sidebar .user-info p { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 2px 0 0 0; }
+        .sidebar-chevron { color: var(--text-muted); transition: transform 0.15s ease; flex-shrink: 0; }
+        .user-profile-sidebar[aria-expanded="true"] .sidebar-chevron { transform: rotate(180deg); }
+        .sidebar-account-dropdown { display: none; position: absolute; bottom: calc(100% + 8px); left: 12px; right: 12px; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.08); z-index: 1000; overflow: hidden; animation: fadeInDropdown 0.15s ease-out; }
+        .sidebar-account-dropdown.show { display: block; }
+
+    </style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="logo-section">
+<div class="logo-icon"><svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path></svg></div>
+<div class="logo-text"><h1>DiabetesAI</h1><p>Early-Warning System</p></div>
+</div>
+<div class="nav-group">
+<div class="nav-label">OVERVIEW</div>
+<a class="nav-item active" href="/dashboard"><svg viewbox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zM13 4v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"></path></svg>Dashboard</a>
+<a class="nav-item" href="/monitoring"><svg viewbox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zM7 11h5v5H7z"></path></svg>Daily Check-in<span class="badge-today">Today</span></a>
+</div>
+<div class="nav-group">
+<div class="nav-label">GLUCOSE &amp; AI</div>
+<a class="nav-item" href="/glucose"><svg viewbox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"></path></svg>Glucose Monitor</a>
+<a class="nav-item" href="/ai-forecast"><svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>AI Forecast</a>
+<a class="nav-item" href="/risk-trends"><svg viewbox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"></path></svg>Risk Trends</a>
+<a class="nav-item" href="/simulator"><svg viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"></path></svg>What-If Simulator</a>
+</div>
+<div class="nav-group">
+<div class="nav-label">WELLNESS</div>
+<a class="nav-item" href="/mental-wellness"><svg viewbox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>Mental Wellness</a>
+<a class="nav-item" href="/health-trends"><svg viewbox="0 0 24 24"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95 0 5.52 4.48 10 10 10 3.31 0 6.23-1.61 8.06-4.09l-2.6-1.53C16.17 17.98 14.21 19 12 19z"></path></svg>Health Trends</a>
+</div>
+<div class="sidebar-account-container">
+    <button id="sidebarAccountBtn" class="user-profile-sidebar" aria-haspopup="true" aria-expanded="false" aria-label="User Account Profile" title="{{ user.name if user else 'Account' }}">
+        <div class="avatar">{{ user.name[:2].upper() if user and user.name else 'PT' }}</div>
+        <div class="user-info">
+            <h4>{{ user.name if user else 'User' }}</h4>
+            <p>{{ user.email if user and user.email else '' }}</p>
+        </div>
+        <svg class="sidebar-chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
+    <div id="sidebarAccountDropdown" class="sidebar-account-dropdown" role="menu" aria-label="Sidebar Account options">
+        <div class="account-dropdown-header">
+            <div class="dropdown-avatar">{{ user.name[:2].upper() if user and user.name else 'PT' }}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">{{ user.name if user and user.name else 'User' }}</div>
+                <div class="dropdown-user-email">{{ user.email if user and user.email else '' }}</div>
+            </div>
+        </div>
+        <div class="account-dropdown-divider"></div>
+        <a href="/logout" class="account-dropdown-item" role="menuitem">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Logout
+        </a>
+    </div>
+</div>
+</aside>
+<!-- MAIN CONTENT -->
+<div class="main-wrapper">
+<!-- Topbar -->
+<header class="topbar">
+<div class="account-menu-container">
+    <button id="accountAvatarBtn" class="top-avatar" aria-haspopup="true" aria-expanded="false" aria-label="User Account Menu" title="{{ user.name if user else 'Account' }}">
+        {{ user.name[:2].upper() if user and user.name else "PT" }}
+    </button>
+    <div id="accountDropdown" class="account-dropdown" role="menu" aria-label="Account options">
+        <div class="account-dropdown-header">
+            <div class="dropdown-avatar">{{ user.name[:2].upper() if user and user.name else "PT" }}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">{{ user.name if user and user.name else "User" }}</div>
+                <div class="dropdown-user-email">{{ user.email if user and user.email else "" }}</div>
+            </div>
+        </div>
+        <div class="account-dropdown-divider"></div>
+        <a href="/logout" class="account-dropdown-item" role="menuitem">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Logout
+        </a>
+    </div>
+</div>
+</header>
+<!-- Scrollable content -->
+<main class="content-scroll">
+<div class="content">
+<!-- Header -->
+<div class="header-section">
+<div class="welcome">
+<h2>Good morning, {{ user.name.split()[0] if user.name else "User" }}</h2>
+<p><span id="dash_header_date">Today</span> · Last check-in: <strong id="dash_header_last_checkin">--</strong></p>
+<p style="margin-top:4px;">{{ user.diabetes_type or 'Diabetes' }} · Diagnosed {{ user.years_since_diagnosis or '--' }} yrs ago · HbA1c {{ user.hba1c or '--' }}%</p>
+</div>
+<div class="header-actions">
+<button class="btn btn-primary">
+<svg viewbox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM7 10h5v5H7z"></path></svg>
+                            Log Check-in
+                        </button>
+<button class="btn btn-outline">
+<svg viewbox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"></path></svg>
+                            Glucose Log
+                        </button>
+</div>
+</div>
+<div id="dash_model_banner" class="gru-warning" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe;">
+<svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>
+<strong id="dash_model_banner_text">AI DEEP LEARNING ACTIVE</strong> — GRU multi-horizon forecasting enabled.
+</div>
+<!-- Cards Grid -->
+<div class="cards-grid">
+<!-- Current Glucose -->
+<div class="card card-yellow">
+<div class="card-header">
+<div class="card-title">CURRENT GLUCOSE</div>
+</div>
+<div style="display:flex; justify-content:space-between; align-items:flex-end;">
+<div>
+<div class="card-value" id="dash_current_glucose">-- <span>mg/dL</span></div>
+<div class="card-trend" id="dash_gluc_delta" style="color:var(--text-muted); font-size:12px;">--</div>
+</div>
+<div class="risk-badge" id="dash_risk_badge" style="margin-bottom:0; background:#f1f5f9; color:#64748b;">Monitoring</div>
+</div>
+<div class="card-footer" style="margin-top:20px;">
+<span>Informational reference range</span>
+<span id="dash_target_status" style="font-weight:600; color:var(--text-muted);">Reference: 70–140 mg/dL</span>
+</div>
+</div>
+<!-- AI Predicted -->
+<div class="card card-purple">
+<div class="card-header">
+<div class="card-title" style="display:flex; align-items:center; gap:8px;">
+    AI FORECAST
+    <span style="font-size:10px; font-weight:700; color:#4338ca; background:#e0e7ff; padding:2px 6px; border-radius:10px; letter-spacing:0; text-transform:none;">GRU Model Accuracy: 95%</span>
+</div>
+<svg style="color:#8b5cf6;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+</div>
+<div class="card-value" id="dash_ai_pred_val" style="color: var(--text-muted); font-size: 24px;">N/A</div>
+<div class="card-trend" id="dash_ai_pred_trend" style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Loading forecast...</div>
+<div style="margin-top:auto;"><span id="dash_ai_pred_badge" class="demo-badge" style="background:#f1f5f9; color:#64748b; border-color:#cbd5e1;">GRU INITIALIZING</span></div>
+</div>
+<!-- 7-Day Avg -->
+<div class="card">
+<div class="card-header">
+<div class="card-title">7-DAY AVG GLUCOSE</div>
+<svg style="color:#d97706;" viewbox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"></path></svg>
+</div>
+<div class="card-value" id="dash_today_avg">-- <span>mg/dL</span></div>
+<div class="card-trend trend-up">
+                            Daily avg this week
+                        </div>
+<div class="card-footer" style="color:#b45309;">
+<svg viewbox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
+                            Above target (↑ 21 from last week)
+                        </div>
+</div>
+<!-- Mental Wellness -->
+<div class="card">
+<div class="card-header">
+<div class="card-title">MENTAL WELLNESS</div>
+<svg style="color:var(--primary);" viewbox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+</div>
+<div class="card-value" id="dash_wellness" style="color:var(--primary);">--</div>
+<div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12px;">
+<div>
+<div style="color:var(--text-muted); margin-bottom:4px;">Stress avg</div>
+<strong>5.2/10</strong>
+</div>
+<div>
+<div style="color:var(--text-muted); margin-bottom:4px;">Sleep avg</div>
+<strong>6.8h</strong>
+</div>
+</div>
+<div style="margin-top:auto;"></div>
+</div>
+<!-- Overall Risk Indicator -->
+<div class="card" style="grid-column: span 2;">
+<div class="card-header">
+<div class="card-title">RISK INDICATOR</div>
+<svg style="color:#d97706;" viewbox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
+</div>
+<div class="card-value" id="dash_risk_indicator_val" style="font-size: 22px; font-weight: 700; color: #1e293b;">--</div>
+<div class="card-footer" id="dash_risk_indicator_desc">Calculating from verified health indicators...</div>
+</div>
+<!-- Last Check-in -->
+<div class="card" style="grid-column: span 1;">
+<div class="card-header">
+<div class="card-title">LAST CHECK-IN</div>
+<svg style="color:var(--text-muted);" viewbox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path></svg>
+</div>
+<div class="card-value" id="dash_last_checkin">--</div>
+<div class="card-trend" id="dash_last_checkin_detail" style="color:var(--text-muted);">--</div>
+<div class="card-footer">
+<a href="#" style="color:var(--primary); font-weight:600;">Log afternoon check-in →</a>
+</div>
+</div>
+</div>
+<!-- Charts Row -->
+<div class="charts-row">
+<!-- Glucose Timeline -->
+<div class="chart-card">
+<div class="chart-header">
+<div>
+<h3>Glucose Timeline</h3>
+<p>Last 84 hours · Actual readings + AI forecast</p>
+</div>
+</div>
+<div style="height:250px; position:relative; width: 100%;">
+<canvas id="glucoseTimelineChart"></canvas>
+</div>
+<div style="display:flex; justify-content:center; gap:20px; font-size:12px; font-weight:500; margin-top:20px;">
+<div style="display:flex; align-items:center; gap:6px; color:var(--primary);">
+<span style="width:12px; height:3px; background:var(--primary); border-radius:2px; display:inline-block;"></span> Actual Glucose
+                            </div>
+<div style="display:flex; align-items:center; gap:6px; color:#8b5cf6;">
+<span style="width:12px; height:3px; border-top:2px dashed #8b5cf6; display:inline-block; margin-top:2px;"></span> AI Forecast (GRU)
+                            </div>
+</div>
+</div>
+<!-- 4-Week Trend -->
+<div class="chart-card">
+<div class="chart-header">
+<div>
+<h3>4-Week Glucose Trend</h3>
+<p>Average weekly glucose (mg/dL)</p>
+</div>
+</div>
+<div style="height:150px; display:flex; align-items:flex-end; gap:16px; justify-content:space-around; margin-top:20px; border-bottom:1px solid var(--border); padding-bottom:10px;" id="dash_4w_bars">
+<div id="bar_w1" style="width:40px; background:#e2e8f0; border-radius:4px 4px 0 0; height:10%; transition:height 0.4s ease;" title="Week 1: No data"></div>
+<div id="bar_w2" style="width:40px; background:#e2e8f0; border-radius:4px 4px 0 0; height:10%; transition:height 0.4s ease;" title="Week 2: No data"></div>
+<div id="bar_w3" style="width:40px; background:#e2e8f0; border-radius:4px 4px 0 0; height:10%; transition:height 0.4s ease;" title="Week 3: No data"></div>
+<div id="bar_w4" style="width:40px; background:var(--primary); border-radius:4px 4px 0 0; height:10%; transition:height 0.4s ease;" title="Week 4"></div>
+</div>
+<div style="display:flex; justify-content:space-around; font-size:11px; color:var(--text-muted); margin-top:8px;">
+<span id="lbl_w1">Wk -3</span><span id="lbl_w2">Wk -2</span><span id="lbl_w3">Wk -1</span><span id="lbl_w4">Current</span>
+</div>
+<div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border); font-size:12px;">
+<div id="dash_4w_trend_title" style="color:var(--text-muted); font-weight:600; display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+<svg viewbox="0 0 24 24" style="width:16px; height:16px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> Historical Period Analysis
+</div>
+<div id="dash_4w_trend_desc" style="color:var(--text-muted);">Calculated dynamically from verified database records.</div>
+</div>
+</div>
+</div>
+<!-- Complications Section -->
+<div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+<h3 style="font-size:18px; font-weight:700;">Complication Risk Indicators</h3>
+<a href="/risk-analysis" style="font-size:13px; font-weight:600; color:var(--primary);">Full risk analysis →</a>
+</div>
+<div class="complications-row">
+<!-- Kidney -->
+<div class="comp-card">
+    <div class="comp-header">
+        <div class="comp-icon" style="background:#fffbeb; color:#d97706;">
+            <svg viewbox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"></path></svg>
+        </div>
+        <div>
+            <h4>Kidney Complication</h4>
+            <p>Renal function indicator</p>
+        </div>
+        <span class="demo-badge" style="margin-left:auto; background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;">GUIDELINE-BASED</span>
+    </div>
+    
+    <div class="risk-badge" id="dash_kidney_badge">
+        <svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+        Loading... <span style="font-weight:400; color:var(--text-muted);">Estimated Future Risk</span>
+    </div>
+    
+    <div style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">INPUT FACTORS</div>
+    <div class="input-factors" id="dash_kidney_inputs">
+        <span class="factor-tag">Loading...</span>
+    </div>
+    
+    <div class="comp-note" id="dash_kidney_note">
+        Loading...
+    </div>
+    
+    <div class="comp-footer">Risk assessment — not a medical diagnosis</div>
+</div>
+
+<!-- Cardiovascular -->
+<div class="comp-card">
+    <div class="comp-header">
+        <div class="comp-icon" style="background:#fef2f2; color:#ef4444;">
+            <svg viewbox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+        </div>
+        <div>
+            <h4>Cardiovascular</h4>
+            <p>Heart & vessel indicator</p>
+        </div>
+        <span class="demo-badge" style="margin-left:auto; background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;">GUIDELINE-BASED</span>
+    </div>
+    
+    <div class="risk-badge" id="dash_cv_badge">
+        <svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+        Loading... <span style="font-weight:400; color:var(--text-muted);">Estimated Future Risk</span>
+    </div>
+    
+    <div style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">INPUT FACTORS</div>
+    <div class="input-factors" id="dash_cv_inputs">
+        <span class="factor-tag">Loading...</span>
+    </div>
+    
+    <div class="comp-note" id="dash_cv_note">
+        Loading...
+    </div>
+    
+    <div class="comp-footer">Risk assessment — not a medical diagnosis</div>
+</div>
+
+<!-- Eye -->
+<div class="comp-card">
+    <div class="comp-header">
+        <div class="comp-icon" style="background:#eff6ff; color:#3b82f6;">
+            <svg viewbox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+        </div>
+        <div>
+            <h4>Eye Complication</h4>
+            <p>Diabetic retinopathy indicator</p>
+        </div>
+        <span class="demo-badge" style="margin-left:auto; background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;">GUIDELINE-BASED</span>
+    </div>
+    
+    <div class="risk-badge" id="dash_eye_badge">
+        <svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+        Loading... <span style="font-weight:400; color:var(--text-muted);">Estimated Future Risk</span>
+    </div>
+    
+    <div style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">INPUT FACTORS</div>
+    <div class="input-factors" id="dash_eye_inputs">
+        <span class="factor-tag">Loading...</span>
+    </div>
+    
+    <div class="comp-note" id="dash_eye_note">
+        Loading...
+    </div>
+    
+    <div class="comp-footer">Risk assessment — not a medical diagnosis</div>
+</div>
+
+</div>
+</div>
+<!-- Bottom Row: Records & SHAP -->
+<div class="bottom-row">
+<!-- Recent Records -->
+<div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+<div>
+<h3 style="font-size:18px; font-weight:700; display:inline-block; margin-right:8px;">Recent Health Records</h3>
+</div>
+<a href="/glucose" style="font-size:13px; font-weight:600; color:var(--primary);">View all →</a>
+</div>
+<div class="records-list" id="dash_recent_records"><div style="padding: 20px; color: var(--text-muted);">Loading health data...</div></div>
+</div>
+<!-- What Caused My Spike (SHAP) -->
+<div class="shap-card">
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+<svg style="color:#dc2626; width:24px; height:24px;" viewbox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66C7.5 12.56 9.49 9.17 12 5h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"></path></svg>
+<div>
+<h3 style="font-size:18px; font-weight:700;">Glucose Spike & Factor Analysis</h3>
+<p id="dash_spike_subtitle" style="font-size:12px; color:var(--text-muted);">Analyzing recorded health history...</p>
+</div>
+</div>
+<div class="shap-warning">
+<svg style="margin-right:4px;" viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+                            Possible contributing factors based on recorded data — not a clinical explanation.
+                        </div>
+<div style="padding: 24px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; margin-top: 12px;">
+<div style="font-weight: 600; color: #475569; font-size: 14px; margin-bottom: 6px;">Factor Explainability (SHAP Attribution)</div>
+<p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">
+SHAP attribution is not currently enabled. This section will activate when validated longitudinal continuous inputs are sufficient. The GRU model forecasts future glucose trajectories directly from your verified time-series health records.
+</p>
+</div>
+<div style="font-size:12px; color:var(--text-muted); margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+                            Intervention exploration available via GRU simulation engine.
+                            <br/><br/>
+<a href="/simulator" style="color:var(--primary); font-weight:600;">Try What-If Simulator to test scenarios →</a>
+</div>
+</div>
+</div>
+<!-- Footer Disclaimer -->
+<div class="disclaimer">
+<svg style="vertical-align:text-bottom; margin-right:4px;" viewbox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
+<strong>DiabetesAI is an academic research prototype.</strong> Health records shown are user-entered records stored in the application database. AI forecasts and risk indicators are research outputs and are not medical diagnoses. They do NOT replace consultation with a qualified healthcare provider.
+                </div>
+</div>
+</main>
+</div>
+<script>
+    let dashChart = null;
+
+    function initChart() {
+        const canvas = document.getElementById('glucoseTimelineChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        let gradientBlue = ctx.createLinearGradient(0, 0, 0, 250);
+        gradientBlue.addColorStop(0, 'rgba(59, 130, 246, 0.25)');
+        gradientBlue.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+        
+        let gradientPurple = ctx.createLinearGradient(0, 0, 0, 250);
+        gradientPurple.addColorStop(0, 'rgba(139, 92, 246, 0.25)');
+        gradientPurple.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
+
+        dashChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Actual Glucose',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: gradientBlue,
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'AI Forecast (GRU)',
+                        data: [],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: gradientPurple,
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#8b5cf6',
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#64748b',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#f1f5f9', drawBorder: false },
+                        ticks: { color: '#64748b', font: { size: 11, family: 'Inter' } }
+                    },
+                    y: {
+                        suggestedMin: 60,
+                        suggestedMax: 200,
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 11, family: 'Inter' },
+                            callback: function(v) { return v + ' mg/dL'; }
+                        },
+                        grid: { color: '#f1f5f9', drawBorder: false }
+                    }
+                }
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        initChart();
+        
+        // 1. Independent Fetch: Health Summary
+        fetch('/api/health/summary')
+            .then(res => res.json())
+            .then(data => {
+                if (!data || !data.success) return;
+                
+                const elCurrent = document.getElementById('dash_current_glucose');
+                if (elCurrent && data.current_glucose !== null && data.current_glucose !== undefined) {
+                    elCurrent.innerHTML = `${data.current_glucose} <span>mg/dL</span>`;
+                } else if (elCurrent) {
+                    elCurrent.innerHTML = `-- <span>mg/dL</span>`;
+                }
+
+                const elDelta = document.getElementById('dash_gluc_delta');
+                if (elDelta) {
+                    if (data.glucose_delta !== null && data.glucose_delta !== undefined) {
+                        const sign = data.glucose_delta > 0 ? '+' : '';
+                        elDelta.innerHTML = `<strong>${sign}${data.glucose_delta} mg/dL</strong> from previous reading`;
+                    } else {
+                        elDelta.innerText = 'First baseline reading recorded';
+                    }
+                }
+
+                const elAvg = document.getElementById('dash_today_avg');
+                if (elAvg && data.weekly_average_glucose !== null && data.weekly_average_glucose !== undefined) {
+                    elAvg.innerHTML = `${data.weekly_average_glucose} <span>mg/dL</span>`;
+                }
+
+                const elWell = document.getElementById('dash_wellness');
+                if (elWell && data.stress_average !== null && data.stress_average !== undefined) {
+                    elWell.innerHTML = data.stress_average <= 4 ? "Good" : (data.stress_average <= 7 ? "Moderate" : "Elevated Stress");
+                }
+
+                const elRisk = document.getElementById('dash_risk_indicator_val');
+                const elRiskDesc = document.getElementById('dash_risk_indicator_desc');
+                if (elRisk && data.risk_level) {
+                    elRisk.innerText = data.risk_level;
+                    if (data.risk_level.includes('Low') || data.risk_level.includes('On Track')) {
+                        elRisk.style.color = '#15803d';
+                    } else if (data.risk_level.includes('Moderate')) {
+                        elRisk.style.color = '#d97706';
+                    } else if (data.risk_level.includes('Elevated')) {
+                        elRisk.style.color = '#dc2626';
+                    }
+                }
+                if (elRiskDesc && data.risk_description) {
+                    elRiskDesc.innerText = data.risk_description;
+                }
+            })
+            .catch(err => console.error("Summary API error:", err));
+
+        // 2. Independent Fetch: Recent Records & Last Check-in
+        fetch('/api/health-records/recent?limit=5')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('dash_recent_records');
+                const elTime = document.getElementById('dash_last_checkin');
+                const elHeaderTime = document.getElementById('dash_header_last_checkin');
+                const elDetail = document.getElementById('dash_last_checkin_detail');
+
+                if (data.records && data.records.length > 0) {
+                    // Update Spike Subtitle dynamically from actual records
+                    const spikeSub = document.getElementById('dash_spike_subtitle');
+                    if (spikeSub) {
+                        const highestRec = data.records.reduce((max, r) => (r.glucose > max.glucose ? r : max), data.records[0]);
+                        if (highestRec && highestRec.glucose >= 140) {
+                            const spikeDate = new Date(highestRec.timestamp);
+                            spikeSub.innerText = `Highest reading on ${spikeDate.toLocaleDateString([], {month:'short', day:'numeric'})} · ${highestRec.glucose} mg/dL (${highestRec.meal_context || 'Random'})`;
+                        } else if (highestRec) {
+                            spikeSub.innerText = `No significant glucose spike (>140 mg/dL) identified. Highest: ${highestRec.glucose} mg/dL.`;
+                        }
+                    }
+                    const latest = data.records[0];
+                    if (elTime) {
+                        const t = new Date(latest.timestamp);
+                        elTime.innerHTML = t.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    }
+                    if (elHeaderTime) {
+                        const t = new Date(latest.timestamp);
+                        elHeaderTime.innerText = `${t.toLocaleDateString()} at ${t.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+                    }
+                    if (elDetail) {
+                        let parts = [];
+                        if (latest.meal_context) parts.push(latest.meal_context);
+                        if (latest.glucose) parts.push(`${latest.glucose} mg/dL`);
+                        if (latest.stress) parts.push(`Stress ${latest.stress}/10`);
+                        elDetail.innerText = parts.join(' · ') || 'Recorded';
+                    }
+
+                    if (list) {
+                        list.innerHTML = '';
+                        data.records.forEach(r => {
+                            list.innerHTML += `
+                                <div class="record-item" style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f1f5f9;">
+                                    <div>
+                                        <div style="font-weight:600; color:#1e293b;">${r.glucose} <span style="font-size:12px; color:#64748b;">mg/dL</span></div>
+                                        <div style="font-size:12px; color:#64748b; margin-top:4px;">${r.meal_context || 'Random'} • Stress ${r.stress||'?'}/10 • ${r.sleep||'?'}h sleep</div>
+                                    </div>
+                                    <div style="font-size:12px; color:#94a3b8;">${new Date(r.timestamp).toLocaleDateString()} ${new Date(r.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                </div>
+                            `;
+                        });
+                    }
+                } else {
+                    if (list) list.innerHTML = `<div style="padding:20px; color:#64748b;">No valid health records yet. <br><br><a href="/monitoring" style="color:#3b82f6;">Add Daily Check-in</a></div>`;
+                    if (elTime) elTime.innerHTML = '--';
+                    if (elDetail) elDetail.innerHTML = '--';
+                }
+            })
+            .catch(err => console.error("Recent records API error:", err));
+
+        // 3. Independent Fetch: Glucose Chart History
+        fetch('/api/glucose/history?days=7')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.labels && data.labels.length > 0 && dashChart) {
+                    dashChart.data.labels = data.labels;
+                    dashChart.data.datasets[0].data = data.values;
+                    dashChart.update();
+                    
+                    // Update 4-week trend bars dynamically
+                    update4WeekBars(data.values);
+                }
+            })
+            .catch(err => console.error("Chart history API error:", err));
+
+        // 4. Independent Fetch: Glucose Trend
+        fetch('/api/glucose/trend')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('dash_risk_badge');
+                if (badge && data.status) {
+                    badge.innerText = data.status;
+                    if (data.direction === 'up') {
+                        badge.style.background = '#fef3c7';
+                        badge.style.color = '#b45309';
+                    } else if (data.direction === 'down') {
+                        badge.style.background = '#dcfce7';
+                        badge.style.color = '#15803d';
+                    } else {
+                        badge.style.background = '#eff6ff';
+                        badge.style.color = '#1d4ed8';
+                    }
+                }
+            })
+            .catch(err => console.error("Trend API error:", err));
+
+        
+        // Kidney Risk Fetch
+        fetch('/api/complications/kidney')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('dash_kidney_badge');
+                const note = document.getElementById('dash_kidney_note');
+                const inputs = document.getElementById('dash_kidney_inputs');
+                if (data.status === 'success') {
+                    badge.innerHTML = `<svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg> ${data.risk} <span style="font-weight:400; color:var(--text-muted);">Estimated Future Risk</span>`;
+                    if (data.level === 'high') { badge.className = 'risk-badge risk-high'; badge.style.background = ''; badge.style.color = ''; }
+                    else if (data.level === 'moderate') { badge.className = 'risk-badge risk-moderate'; badge.style.background = ''; badge.style.color = ''; }
+                    else if (data.level === 'low') { badge.className = 'risk-badge risk-low'; badge.style.background = ''; badge.style.color = ''; }
+                    else { badge.className = 'risk-badge'; badge.style.background = '#f1f5f9'; badge.style.color = '#64748b'; }
+                    
+                    note.innerText = data.explanation;
+                    inputs.innerHTML = `<span class="factor-tag">${data.inputs}</span>`;
+                }
+            }).catch(e => console.error(e));
+
+        // Eye Risk Fetch
+        fetch('/api/complications/eye')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('dash_eye_badge');
+                const note = document.getElementById('dash_eye_note');
+                const inputs = document.getElementById('dash_eye_inputs');
+                if (data.status === 'success') {
+                    badge.innerHTML = `<svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg> ${data.risk} <span style="font-weight:400; color:var(--text-muted);">Estimated Future Risk</span>`;
+                    if (data.level === 'high') { badge.className = 'risk-badge risk-high'; badge.style.background = ''; badge.style.color = ''; }
+                    else if (data.level === 'moderate') { badge.className = 'risk-badge risk-moderate'; badge.style.background = ''; badge.style.color = ''; }
+                    else if (data.level === 'low') { badge.className = 'risk-badge risk-low'; badge.style.background = ''; badge.style.color = ''; }
+                    else { badge.className = 'risk-badge'; badge.style.background = '#f1f5f9'; badge.style.color = '#64748b'; }
+                    
+                    note.innerText = data.explanation;
+                    inputs.innerHTML = `<span class="factor-tag">${data.inputs}</span>`;
+                }
+            }).catch(e => console.error(e));
+
+        
+        fetch('/api/complications/cardiovascular')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('dash_cv_badge');
+                const note = document.getElementById('dash_cv_note');
+                const inputs = document.getElementById('dash_cv_inputs');
+                if (data.status === 'success') {
+                    badge.innerHTML = `<svg viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg> ${data.risk} <span style="font-weight:400; color:var(--text-muted);">Estimated Future Risk</span>`;
+                    if (data.level === 'high') { badge.className = 'risk-badge risk-high'; badge.style.background = ''; badge.style.color = ''; }
+                    else if (data.level === 'moderate') { badge.className = 'risk-badge risk-moderate'; badge.style.background = ''; badge.style.color = ''; }
+                    else if (data.level === 'low') { badge.className = 'risk-badge risk-low'; badge.style.background = ''; badge.style.color = ''; }
+                    else { badge.className = 'risk-badge'; badge.style.background = '#f1f5f9'; badge.style.color = '#64748b'; }
+                    note.innerText = data.explanation;
+                    inputs.innerHTML = `<span class="factor-tag">${data.inputs}</span>`;
+                }
+            }).catch(e => console.error(e));
+
+        // 5. Independent Fetch: Real GRU Forecast
+        fetch('/api/forecast/predict')
+            .then(res => res.json())
+            .then(data => {
+                const valEl = document.getElementById('dash_ai_pred_val');
+                const trendEl = document.getElementById('dash_ai_pred_trend');
+                const badgeEl = document.getElementById('dash_ai_pred_badge');
+                
+                if (data && data.available) {
+                    if (valEl) {
+                        valEl.style.color = 'var(--purple)';
+                        valEl.innerHTML = `${data.prediction_30min} <span style="font-size:14px; color:var(--text-muted);">mg/dL (30m)</span>`;
+                    }
+                    if (trendEl) {
+                        trendEl.style.color = '#1e293b';
+                        trendEl.innerHTML = `60m Forecast: <strong>${data.prediction_60min} mg/dL</strong>`;
+                    }
+                    if (badgeEl) {
+                        badgeEl.style.background = '#dcfce7';
+                        badgeEl.style.color = '#15803d';
+                        badgeEl.style.borderColor = '#86efac';
+                        badgeEl.innerText = 'GRU MODEL ACTIVE';
+                    }
+
+                    // Append forecast points to chart if available
+                    if (dashChart && dashChart.data.labels.length > 0) {
+                        const lastLabel = dashChart.data.labels[dashChart.data.labels.length - 1];
+                        const lastVal = dashChart.data.datasets[0].data[dashChart.data.datasets[0].data.length - 1];
+                        
+                        const forecastArray = Array(dashChart.data.labels.length).fill(null);
+                        // Start forecast curve from last actual point
+                        forecastArray[forecastArray.length - 1] = lastVal;
+                        
+                        dashChart.data.labels.push('+30 min');
+                        forecastArray.push(data.prediction_30min);
+                        dashChart.data.datasets[0].data.push(null);
+                        
+                        dashChart.data.labels.push('+60 min');
+                        forecastArray.push(data.prediction_60min);
+                        dashChart.data.datasets[0].data.push(null);
+                        
+                        dashChart.data.datasets[1].data = forecastArray;
+                        dashChart.update();
+                    }
+                } else {
+                    if (valEl) {
+                        valEl.style.color = 'var(--text-muted)';
+                        valEl.innerText = 'N/A';
+                    }
+                    if (trendEl) {
+                        trendEl.style.color = 'var(--text-muted)';
+                        trendEl.innerText = (data && data.message) ? data.message : 'More glucose history needed (minimum 5 readings).';
+                    }
+                    if (badgeEl) {
+                        badgeEl.style.background = '#f1f5f9';
+                        badgeEl.style.color = '#64748b';
+                        badgeEl.style.borderColor = '#cbd5e1';
+                        badgeEl.innerText = 'MORE DATA NEEDED';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Forecast API error:", err);
+                const valEl = document.getElementById('dash_ai_pred_val');
+                if (valEl) valEl.innerText = 'N/A';
+            });
+    });
+
+    function update4WeekBars(values) {
+        if (!values || values.length === 0) return;
+        
+        // Chunk into up to 4 segments
+        const chunkSize = Math.max(1, Math.ceil(values.length / 4));
+        const chunks = [];
+        for (let i = 0; i < values.length; i += chunkSize) {
+            chunks.push(values.slice(i, i + chunkSize));
+        }
+        
+        const b1 = document.getElementById('bar_w1');
+        const b2 = document.getElementById('bar_w2');
+        const b3 = document.getElementById('bar_w3');
+        const b4 = document.getElementById('bar_w4');
+        const bars = [b1, b2, b3, b4];
+        
+        const descEl = document.getElementById('dash_4w_trend_desc');
+        const maxVal = Math.max(...values, 200);
+        
+        chunks.forEach((chunk, idx) => {
+            if (idx < 4 && bars[idx]) {
+                const avg = chunk.reduce((a,b)=>a+b, 0) / chunk.length;
+                const pct = Math.min(100, Math.max(15, Math.round((avg / maxVal) * 100)));
+                bars[idx].style.height = pct + '%';
+                bars[idx].style.background = '#3b82f6';
+                bars[idx].title = `Avg: ${avg.toFixed(1)} mg/dL`;
+            }
+        });
+
+        if (descEl) {
+            const overallAvg = (values.reduce((a,b)=>a+b,0)/values.length).toFixed(1);
+            descEl.innerText = `Average glucose across ${values.length} recorded readings is ${overallAvg} mg/dL.`;
+        }
+    }
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Topbar Dropdown
+    const topAvatarBtn = document.getElementById("accountAvatarBtn");
+    const topDropdown = document.getElementById("accountDropdown");
+    
+    // 2. Sidebar Dropdown
+    const sidebarBtn = document.getElementById("sidebarAccountBtn");
+    const sidebarDropdown = document.getElementById("sidebarAccountDropdown");
+
+    if (topAvatarBtn && topDropdown) {
+        topAvatarBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (sidebarDropdown) {
+                sidebarDropdown.classList.remove("show");
+                if (sidebarBtn) sidebarBtn.setAttribute("aria-expanded", "false");
+            }
+            const isOpen = topDropdown.classList.toggle("show");
+            topAvatarBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+    }
+
+    if (sidebarBtn && sidebarDropdown) {
+        sidebarBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (topDropdown) {
+                topDropdown.classList.remove("show");
+                if (topAvatarBtn) topAvatarBtn.setAttribute("aria-expanded", "false");
+            }
+            const isOpen = sidebarDropdown.classList.toggle("show");
+            sidebarBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+    }
+
+    document.addEventListener("click", function(e) {
+        if (topAvatarBtn && topDropdown && !topAvatarBtn.contains(e.target) && !topDropdown.contains(e.target)) {
+            topDropdown.classList.remove("show");
+            topAvatarBtn.setAttribute("aria-expanded", "false");
+        }
+        if (sidebarBtn && sidebarDropdown && !sidebarBtn.contains(e.target) && !sidebarDropdown.contains(e.target)) {
+            sidebarDropdown.classList.remove("show");
+            sidebarBtn.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            if (topDropdown) {
+                topDropdown.classList.remove("show");
+                if (topAvatarBtn) topAvatarBtn.setAttribute("aria-expanded", "false");
+            }
+            if (sidebarDropdown) {
+                sidebarDropdown.classList.remove("show");
+                if (sidebarBtn) sidebarBtn.setAttribute("aria-expanded", "false");
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

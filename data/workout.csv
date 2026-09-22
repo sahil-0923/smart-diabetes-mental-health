@@ -1,0 +1,33 @@
+Condition,Exercise,Category,Duration_min,Sets,Reps,Intensity,Rest_sec,Level,Type1_Safety,Type2_Safety,Notes
+General,Brisk walking,Aerobic,30,1,0,Moderate,0,Beginner,Monitor glucose as advised,Generally suitable,Comfortable sustainable pace
+General,Easy walking,Aerobic,20,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Good starting activity
+General,Cycling,Aerobic,30,1,0,Moderate,0,Beginner,Monitor glucose as advised,Generally suitable,Stationary bike can be useful
+General,Swimming,Aerobic,30,1,0,Moderate,0,Intermediate,Monitor glucose as advised,Generally suitable,Only if medically appropriate
+General,Elliptical,Aerobic,25,1,0,Moderate,0,Intermediate,Monitor glucose as advised,Generally suitable,Low impact option
+General,Jogging,Aerobic,25,1,0,Moderate,0,Intermediate,Monitor glucose as advised,Generally suitable,Progress gradually
+General,Bodyweight squat,Resistance,15,3,10,Moderate,60,Beginner,Generally suitable,Generally suitable,Use controlled technique
+General,Wall push-up,Resistance,10,3,10,Light,45,Beginner,Generally suitable,Generally suitable,Good beginner upper-body exercise
+General,Resistance band row,Resistance,15,3,12,Moderate,60,Beginner,Generally suitable,Generally suitable,Controlled movement
+General,Glute bridge,Resistance,10,3,12,Light,45,Beginner,Generally suitable,Generally suitable,Focus on hip control
+General,Plank,Core,8,3,30,Moderate,45,Intermediate,Generally suitable,Generally suitable,Stop if pain occurs
+General,Mobility routine,Mobility,10,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Use as warm-up or recovery
+General,Yoga,Flexibility,20,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Choose appropriate intensity
+Type 1,Brisk walking,Aerobic,30,1,0,Moderate,0,Beginner,Check glucose according to personal plan,Generally suitable,Carry treatment for hypoglycemia when advised
+Type 1,Cycling,Aerobic,30,1,0,Moderate,0,Intermediate,Check glucose according to personal plan,Generally suitable,Monitor for exercise-related glucose changes
+Type 1,Resistance training,Resistance,30,3,10,Moderate,60,Intermediate,Follow individual insulin/exercise plan,Generally suitable,Monitor glucose response
+Type 1,Bodyweight squat,Resistance,15,3,10,Moderate,60,Beginner,Follow individual plan,Generally suitable,Controlled repetitions
+Type 1,Walking,Aerobic,20,1,0,Light,0,Beginner,Check glucose according to personal plan,Generally suitable,Good low-intensity option
+Type 1,Yoga,Flexibility,20,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Recovery activity
+Type 2,Brisk walking,Aerobic,30,1,0,Moderate,0,Beginner,Generally suitable,Generally suitable,Useful starting aerobic exercise
+Type 2,Cycling,Aerobic,30,1,0,Moderate,0,Beginner,Generally suitable,Generally suitable,Progress duration gradually
+Type 2,Resistance training,Resistance,30,3,10,Moderate,60,Intermediate,Generally suitable,Generally suitable,Train major muscle groups
+Type 2,Chair squat,Resistance,15,3,10,Light,45,Beginner,Generally suitable,Generally suitable,Useful for beginners
+Type 2,Resistance band row,Resistance,15,3,12,Moderate,60,Beginner,Generally suitable,Generally suitable,Upper-body strength
+Type 2,Walking,Aerobic,20,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Can be accumulated through the week
+Type 2,Yoga,Flexibility,20,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Mobility and recovery
+Prediabetes,Brisk walking,Aerobic,35,1,0,Moderate,0,Beginner,Generally suitable,Generally suitable,Progress toward weekly activity target
+Prediabetes,Cycling,Aerobic,30,1,0,Moderate,0,Beginner,Generally suitable,Generally suitable,Moderate aerobic option
+Prediabetes,Resistance training,Resistance,30,3,10,Moderate,60,Beginner,Generally suitable,Generally suitable,Major muscle groups
+Prediabetes,Bodyweight squat,Resistance,15,3,12,Moderate,60,Beginner,Generally suitable,Generally suitable,Progress repetitions gradually
+Prediabetes,Walking,Aerobic,30,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Good daily movement
+Prediabetes,Yoga,Flexibility,20,1,0,Light,0,Beginner,Generally suitable,Generally suitable,Recovery option

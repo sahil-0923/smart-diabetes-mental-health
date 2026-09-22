@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health History - DiabetesAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        :root { --bg-body: #f8f9fc; --primary: #3b82f6; --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 40px 20px; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 32px; font-size: 15px; }
+        .step { font-size: 13px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+        .day-block { border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #f8fafc; }
+        .day-header { font-weight: 600; font-size: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-weight: 500; font-size: 12px; margin-bottom: 6px; color: var(--text-muted); }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top:16px; }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 16px; width: 100%; cursor: pointer; margin-top: 12px; }
+        .btn-add { background: #f1f5f9; color: var(--text-main); font-size: 13px; padding: 8px 16px; margin-top:0; width: auto; border: 1px solid var(--border); }
+        .remove-btn { color: #ef4444; background: none; border: none; font-size: 12px; cursor: pointer; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="step">Step 2 of 3</span>
+        <h1>Build Your Health Baseline</h1>
+        <p class="subtitle">To accurately forecast your health patterns, a minimum of 7 days of historical data is recommended. However, a minimum of 5 readings is strictly required to proceed. Don't worry if you miss an optional field.</p>
+
+        <form method="POST" action="/onboarding/history" id="historyForm" onsubmit="return validateForm()">
+            <div id="daysContainer">
+                <!-- Day block 1 -->
+                <div class="day-block">
+                    <div class="day-header">
+                        Reading 1
+                        <button type="button" class="remove-btn" onclick="this.parentNode.parentNode.remove(); updateCounts();">Remove</button>
+                    </div>
+                    <div class="grid-4">
+                        <div class="form-group">
+                            <label>Date & Time *</label>
+                            <input type="datetime-local" name="date[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Glucose (mg/dL) *</label>
+                            <input type="number" step="0.1" name="glucose[]" min="40" max="500" placeholder="40 - 500" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Meal Context</label>
+                            <select name="meal_context[]">
+                                <option value="Fasting">Fasting</option>
+                                <option value="Before Meal">Before Meal</option>
+                                <option value="After Meal">After Meal</option>
+                                <option value="Random" selected>Random</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Stress (1-10)</label>
+                            <input type="number" min="1" max="10" name="stress[]" placeholder="1 - 10">
+                        </div>
+                    </div>
+                    <div class="grid-4">
+                        <div class="form-group">
+                            <label>Sleep (hours)</label>
+                            <input type="number" step="0.5" min="0.5" max="24" name="sleep[]" placeholder="0.5 - 24">
+                        </div>
+                        <div class="form-group">
+                            <label>Steps</label>
+                            <input type="number" min="0" max="100000" name="steps[]" placeholder="0+">
+                        </div>
+                        <div class="form-group">
+                            <label>Exercise (mins)</label>
+                            <input type="number" min="0" max="720" name="exercise_duration[]" placeholder="0 - 720">
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (kg)</label>
+                            <input type="number" step="0.1" min="20" max="400" name="weight[]" placeholder="20 - 400">
+                        </div>
+                    </div>
+                    <!-- hidden mood input for simplicity -->
+                    <input type="hidden" name="mood[]" value="5">
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 32px;">
+                <button type="button" class="btn btn-add" onclick="addDay()">+ Add Another Reading</button>
+                <div id="countDisplay" style="font-size:13px; color:#ef4444; font-weight:600;">1 reading (Min 5 required)</div>
+            </div>
+
+            <div id="errorMsg" style="color:#ef4444; font-size:14px; font-weight:600; display:none; margin-bottom:12px; text-align:center;">You must provide at least 5 readings to continue.</div>
+            <button type="submit" class="btn">Continue to Review</button>
+        </form>
+    </div>
+
+    <script>
+        function addDay() {
+            const container = document.getElementById('daysContainer');
+            const clone = container.children[0].cloneNode(true);
+            clone.querySelectorAll('input').forEach(i => {
+                if(i.type !== 'hidden') i.value = '';
+            });
+            container.appendChild(clone);
+            updateCounts();
+        }
+        function updateCounts() {
+            const count = document.getElementById('daysContainer').children.length;
+            const display = document.getElementById('countDisplay');
+            
+            if (count < 5) {
+                display.style.color = '#ef4444';
+                display.innerText = count + ' reading' + (count!==1?'s':'') + ' (Min 5 required)';
+            } else {
+                display.style.color = '#10b981';
+                display.innerText = count + ' reading' + (count!==1?'s':'') + ' (Minimum met)';
+                document.getElementById('errorMsg').style.display = 'none';
+            }
+            
+            let idx = 1;
+            document.querySelectorAll('.day-header').forEach(header => {
+                header.firstChild.textContent = 'Reading ' + idx + ' ';
+                idx++;
+            });
+        }
+
+        function validateForm() {
+            const container = document.getElementById('daysContainer');
+            const count = container.children.length;
+            const errEl = document.getElementById('errorMsg');
+            if (count < 5) {
+                errEl.innerText = "You must provide at least 5 readings to continue.";
+                errEl.style.display = 'block';
+                return false;
+            }
+
+            const glucoses = document.querySelectorAll('input[name="glucose[]"]');
+            for (let i = 0; i < glucoses.length; i++) {
+                const val = parseFloat(glucoses[i].value);
+                if (isNaN(val) || val < 40 || val > 500) {
+                    errEl.innerText = `Reading ${i+1}: Glucose (${glucoses[i].value} mg/dL) must be between 40 and 500 mg/dL.`;
+                    errEl.style.display = 'block';
+                    glucoses[i].focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

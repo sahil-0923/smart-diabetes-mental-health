@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review & Process - DiabetesAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-body: #f8f9fc; --primary: #3b82f6; --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding: 40px 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 32px; font-size: 15px; }
+        .step { font-size: 13px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+        .review-box { border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .review-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; font-weight: 600; }
+        .review-header a { font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 500; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px; }
+        .label { color: var(--text-muted); font-size: 12px; }
+        .val { font-weight: 500; margin-bottom: 12px; }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 16px; width: 100%; cursor: pointer; text-decoration: none; display: block; text-align: center; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="step">Step 3 of 3</span>
+        <h1>Review Your Information</h1>
+        <p class="subtitle">Please confirm your details before we process your personalized baseline.</p>
+
+        <div class="review-box">
+            <div class="review-header">
+                Health Profile
+                <a href="/onboarding/profile">Edit Profile</a>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <div class="label">Age</div>
+                    <div class="val">{{ user.age or 'Not provided' }}</div>
+                </div>
+                <div>
+                    <div class="label">Gender</div>
+                    <div class="val">{{ user.gender or 'Not provided' }}</div>
+                </div>
+                <div>
+                    <div class="label">Diabetes Type</div>
+                    <div class="val">{{ user.diabetes_type or 'Not provided' }}</div>
+                </div>
+                <div>
+                    <div class="label">Years Diagnosed</div>
+                    <div class="val">{{ user.years_since_diagnosis or 'Not provided' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-box">
+            <div class="review-header">
+                Health History
+                <a href="/onboarding/history">Edit Health History</a>
+            </div>
+            <div style="font-size: 14px;">
+                You have logged <strong>{{ records_count }}</strong> reading(s). 
+                These will be used to calculate your initial baseline metrics (average glucose, sleep, stress, etc).
+            </div>
+        </div>
+
+        <a href="/onboarding/processing" class="btn">Confirm & Process Data</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+Condition,Meal,Food,Serving_grams,Calories,Carbs_g,Protein_g,Fat_g,Fiber_g,Type1_Suitable,Type2_Suitable,Notes
+General,Breakfast,Oats dry,40,152,27,5,3,4,Yes,Yes,Use unsweetened preparation
+General,Breakfast,Plain curd,150,90,7,5,5,0,Yes,Yes,Prefer unsweetened
+General,Breakfast,Almonds,15,87,3,3,8,2,Yes,Yes,Small portion
+General,Breakfast,Whole egg,50,72,0,6,5,0,Yes,Yes,Protein source
+General,Breakfast,Vegetable oats,150,180,30,6,5,5,Yes,Yes,Use minimal oil
+Type 1,Breakfast,Moong dal chilla,120,170,24,9,4,4,Yes,Yes,Carbohydrate should be considered in meal planning
+Type 1,Breakfast,Whole wheat toast,60,150,26,6,2,3,Yes,Yes,Account for carbohydrate content
+Type 1,Lunch,Brown rice cooked,120,135,28,3,1,2,Yes,Yes,Portion carbohydrate consistently
+Type 1,Lunch,Chicken breast cooked,120,198,0,37,4,0,Yes,Yes,Lean protein
+Type 1,Lunch,Dal cooked,150,174,30,12,1,9,Yes,Yes,High fiber carbohydrate and protein
+Type 1,Lunch,Mixed vegetables,200,90,16,5,1,6,Yes,Yes,Non-starchy vegetables
+Type 1,Snack,Apple,120,62,17,0,0,3,Yes,Yes,Whole fruit preferred over juice
+Type 1,Snack,Peanuts,20,113,3,5,10,2,Yes,Yes,Small portion
+Type 1,Dinner,Chapati whole wheat,70,170,30,6,3,5,Yes,Yes,Portion according to individual carbohydrate plan
+Type 1,Dinner,Paneer low fat,100,145,4,18,6,0,Yes,Yes,Protein source
+Type 1,Dinner,Vegetables cooked,200,90,15,5,2,6,Yes,Yes,Limit excess oil
+Type 2,Breakfast,Vegetable upma,150,210,34,6,6,4,Yes,Yes,Use vegetables and limited oil
+Type 2,Breakfast,Moong dal chilla,120,170,24,9,4,4,Yes,Yes,Fiber-rich option
+Type 2,Breakfast,Plain curd,150,90,7,5,5,0,Yes,Yes,Unsweetened
+Type 2,Lunch,Brown rice cooked,100,112,23,3,1,2,Yes,Yes,Controlled portion
+Type 2,Lunch,Dal cooked,150,174,30,12,1,9,Yes,Yes,High fiber
+Type 2,Lunch,Chicken breast cooked,120,198,0,37,4,0,Yes,Yes,Lean protein
+Type 2,Lunch,Mixed vegetables,250,110,20,6,2,8,Yes,Yes,Large vegetable portion
+Type 2,Snack,Guava,150,102,22,4,1,8,Yes,Yes,Whole fruit
+Type 2,Snack,Roasted chana,30,120,18,6,2,5,Yes,Yes,Fiber-rich snack
+Type 2,Dinner,Chapati whole wheat,60,145,26,5,2,4,Yes,Yes,Controlled carbohydrate portion
+Type 2,Dinner,Tofu,120,145,3,17,8,2,Yes,Yes,Plant protein
+Type 2,Dinner,Mixed vegetables,250,110,20,6,2,8,Yes,Yes,Prioritize non-starchy vegetables
+Prediabetes,Breakfast,Oats dry,40,152,27,5,3,4,Yes,Yes,Fiber-rich carbohydrate
+Prediabetes,Breakfast,Plain curd,150,90,7,5,5,0,Yes,Yes,Unsweetened
+Prediabetes,Lunch,Dal cooked,150,174,30,12,1,9,Yes,Yes,Fiber-rich protein source
+Prediabetes,Lunch,Mixed vegetables,250,110,20,6,2,8,Yes,Yes,Large vegetable portion
+Prediabetes,Lunch,Brown rice cooked,100,112,23,3,1,2,Yes,Yes,Controlled portion
+Prediabetes,Snack,Apple,120,62,17,0,0,3,Yes,Yes,Whole fruit
+Prediabetes,Dinner,Chapati whole wheat,60,145,26,5,2,4,Yes,Yes,Controlled portion
+Prediabetes,Dinner,Chicken breast cooked,120,198,0,37,4,0,Yes,Yes,Lean protein
+Prediabetes,Dinner,Mixed vegetables,250,110,20,6,2,8,Yes,Yes,High vegetable intake
+General,Any,Sugary soft drink,330,139,35,0,0,0,No,No,Avoid or minimize
+General,Any,Fruit juice,250,110,26,0,0,0,No,No,Whole fruit generally preferred
+General,Any,Sweets,50,200,30,2,8,1,No,No,Limit added sugar
+General,Any,Deep fried snacks,100,300,35,6,16,3,No,No,Limit frequency

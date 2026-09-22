@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabetesAI - Daily Health Check-in</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        :root {
+            --bg-body: #f8f9fc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-bg: #eff6ff;
+            --demo-yellow: #fef3c7;
+            --demo-yellow-text: #b45309;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        svg { width: 16px; height: 16px; fill: currentColor; }
+        
+        /* Sidebar (same as dashboard but with active Daily Check-in and Log Out) */
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+        .logo-section { padding: 24px 20px; display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 32px; height: 32px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .logo-text h1 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .logo-text p { font-size: 11px; color: var(--text-muted); }
+        
+        .nav-group { margin-top: 16px; }
+        .nav-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 20px; margin-bottom: 8px; }
+        .nav-item { display: flex; align-items: center; padding: 10px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; margin: 2px 12px; border-radius: 8px; gap: 12px; }
+        .nav-item:hover { background: #f8fafc; color: var(--text-main); }
+        .nav-item.active { background: var(--primary-bg); color: var(--primary); }
+        
+        .badge-demo, .demo-badge { background: var(--demo-yellow); color: var(--demo-yellow-text); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;}
+        .badge-demo { margin-left: auto; }
+        .badge-new { background: #dcfce7; color: #15803d; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
+        .badge-today { color: var(--primary); font-size: 11px; font-weight: 600; margin-left: auto; background: var(--primary-bg); padding: 2px 6px; border-radius: 4px;}
+        
+        .user-profile-sidebar { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .user-info h4 { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .user-info p { font-size: 12px; color: var(--text-muted); }
+        
+        .logout-btn { display: flex; align-items: center; gap: 8px; color: #dc2626; font-size: 14px; font-weight: 600; padding: 0 20px 20px; text-decoration: none;}
+        
+        /* Main wrapper & Topbar */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: space-between; flex-shrink: 0; }
+        
+        
+        
+        
+        .top-avatar { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+
+        /* Content area */
+        .content-scroll { flex: 1; overflow-y: auto; padding: 32px; }
+        .content { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+        
+        .header-title { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 700; margin-bottom: 8px;}
+        .header-subtitle { color: var(--text-muted); font-size: 14px; }
+        
+        /* Stepper */
+        .stepper { display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px;}
+        .step { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; z-index: 1; flex: 1;}
+        .step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; background: #f1f5f9; color: var(--text-muted); }
+        .step.active .step-circle { background: var(--primary); color: #fff; }
+        .step-label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        .step.active .step-label { color: var(--primary); font-weight: 600;}
+        .step:not(:last-child)::after { content: ''; position: absolute; top: 16px; left: calc(50% + 24px); right: calc(-50% + 24px); height: 2px; background: var(--border); z-index: -1; }
+        
+        /* Form Card */
+        .form-card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); padding: 32px; }
+        .card-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .card-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+        
+        .form-group { margin-bottom: 24px; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
+        .form-label span { color: #dc2626; } /* Required asterisk */
+        .form-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        
+        /* Large Input */
+        .input-large-wrapper { position: relative; display: flex; align-items: center; }
+        .input-large { width: 100%; padding: 16px 20px; font-size: 24px; font-weight: 500; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        .input-large::placeholder { color: #cbd5e1; }
+        .input-large:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-bg); }
+        .input-unit { position: absolute; right: 20px; font-size: 14px; color: var(--text-muted); font-weight: 500; }
+        
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-std { width: 100%; padding: 12px 16px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; outline: none; color: var(--text-main); display: flex; justify-content: space-between; align-items: center;}
+        
+        /* Radio cards */
+        .radio-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .radio-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.2s; }
+        .radio-card.active { border-color: var(--primary); background: var(--primary-bg); }
+        .radio-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
+        .radio-card.active .radio-title { color: var(--primary); }
+        .radio-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        
+        /* Textarea */
+        textarea.input-std { resize: vertical; min-height: 80px; font-family: inherit; }
+        
+        /* Info alert */
+        .info-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; display: flex; gap: 12px; margin-top: 12px;}
+        .info-alert svg { color: var(--primary); flex-shrink: 0; width: 20px; height: 20px; }
+        .info-alert-title { font-size: 13px; font-weight: 600; color: #1e3a8a; margin-bottom: 4px; }
+        .info-alert-text { font-size: 12px; color: #3b82f6; line-height: 1.5; }
+    
+        /* Topbar & Account Menu */
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: flex-end; flex-shrink: 0; }
+        .account-menu-container { position: relative; display: flex; align-items: center; }
+        .top-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; border: none; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; outline: none; }
+        .top-avatar:hover, .top-avatar:focus-visible { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .account-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 240px; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); z-index: 1000; overflow: hidden; animation: fadeInDropdown 0.15s ease-out; }
+        .account-dropdown.show { display: block; }
+        .account-dropdown-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: #f8fafc; }
+        .dropdown-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .dropdown-user-details { overflow: hidden; }
+        .dropdown-user-name { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dropdown-user-email { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .account-dropdown-divider { height: 1px; background: var(--border); }
+        .account-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; color: #dc2626; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.15s ease; width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; box-sizing: border-box; }
+        .account-dropdown-item:hover, .account-dropdown-item:focus-visible { background: #fef2f2; }
+        @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    
+        /* Sidebar Account Menu */
+        .sidebar-account-container { position: relative; margin-top: auto; width: 100%; }
+        .user-profile-sidebar { width: 100%; padding: 16px 20px; border-top: 1px solid var(--border); border-left: none; border-right: none; border-bottom: none; background: transparent; display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left; transition: background 0.15s ease; box-sizing: border-box; }
+        .user-profile-sidebar:hover, .user-profile-sidebar:focus-visible { background: #f8fafc; }
+        .user-profile-sidebar .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-profile-sidebar .user-info { flex: 1; overflow: hidden; }
+        .user-profile-sidebar .user-info h4 { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+        .user-profile-sidebar .user-info p { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 2px 0 0 0; }
+        .sidebar-chevron { color: var(--text-muted); transition: transform 0.15s ease; flex-shrink: 0; }
+        .user-profile-sidebar[aria-expanded="true"] .sidebar-chevron { transform: rotate(180deg); }
+        .sidebar-account-dropdown { display: none; position: absolute; bottom: calc(100% + 8px); left: 12px; right: 12px; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.08); z-index: 1000; overflow: hidden; animation: fadeInDropdown 0.15s ease-out; }
+        .sidebar-account-dropdown.show { display: block; }
+
+    </style>
+</head>
+<body>
+
+        <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg></div>
+            <div class="logo-text"><h1>DiabetesAI</h1><p>Early-Warning System</p></div>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">OVERVIEW</div>
+            <a href="/dashboard" class="nav-item "><svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zM13 4v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>Dashboard</a>
+            <a href="/monitoring" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zM7 11h5v5H7z"/></svg>Daily Check-in<span class="badge-today">Today</span></a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">GLUCOSE & AI</div>
+            <a href="/glucose" class="nav-item "><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>Glucose Monitor</a>
+            <a href="/ai-forecast" class="nav-item "><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>AI Forecast</a>
+            <a href="/risk-trends" class="nav-item "><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>Risk Trends</a>
+            <a href="/simulator" class="nav-item "><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg>What-If Simulator</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">WELLNESS</div>
+            <a href="/mental-wellness" class="nav-item "><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Mental Wellness</a>
+            <a href="/health-trends" class="nav-item "><svg viewBox="0 0 24 24"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95 0 5.52 4.48 10 10 10 3.31 0 6.23-1.61 8.06-4.09l-2.6-1.53C16.17 17.98 14.21 19 12 19z"/></svg>Health Trends</a>
+        </div>
+
+        <div class="sidebar-account-container">
+    <button id="sidebarAccountBtn" class="user-profile-sidebar" aria-haspopup="true" aria-expanded="false" aria-label="User Account Profile" title="{{ user.name if user else 'Account' }}">
+        <div class="avatar">{{ user.name[:2].upper() if user and user.name else 'PT' }}</div>
+        <div class="user-info">
+            <h4>{{ user.name if user else 'User' }}</h4>
+            <p>{{ user.email if user and user.email else '' }}</p>
+        </div>
+        <svg class="sidebar-chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
+    <div id="sidebarAccountDropdown" class="sidebar-account-dropdown" role="menu" aria-label="Sidebar Account options">
+        <div class="account-dropdown-header">
+            <div class="dropdown-avatar">{{ user.name[:2].upper() if user and user.name else 'PT' }}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">{{ user.name if user and user.name else 'User' }}</div>
+                <div class="dropdown-user-email">{{ user.email if user and user.email else '' }}</div>
+            </div>
+        </div>
+        <div class="account-dropdown-divider"></div>
+        <a href="/logout" class="account-dropdown-item" role="menuitem">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Logout
+        </a>
+    </div>
+</div>
+</aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+<div class="account-menu-container">
+    <button id="accountAvatarBtn" class="top-avatar" aria-haspopup="true" aria-expanded="false" aria-label="User Account Menu" title="{{ user.name if user else 'Account' }}">
+        {{ user.name[:2].upper() if user and user.name else "PT" }}
+    </button>
+    <div id="accountDropdown" class="account-dropdown" role="menu" aria-label="Account options">
+        <div class="account-dropdown-header">
+            <div class="dropdown-avatar">{{ user.name[:2].upper() if user and user.name else "PT" }}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">{{ user.name if user and user.name else "User" }}</div>
+                <div class="dropdown-user-email">{{ user.email if user and user.email else "" }}</div>
+            </div>
+        </div>
+        <div class="account-dropdown-divider"></div>
+        <a href="/logout" class="account-dropdown-item" role="menuitem">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Logout
+        </a>
+    </div>
+</div>
+</header>
+
+        <!-- Scrollable content -->
+        <main class="content-scroll">
+            <div class="content">
+                
+                <div>
+                    <h2 class="header-title">Daily Health Check-in</h2>
+                    <p class="header-subtitle">Record your glucose reading and daily health metrics</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            {% for category, message in messages %}
+                                <div style="padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; {{ 'background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5;' if category == 'error' else 'background:#dcfce7; color:#15803d; border:1px solid #86efac;' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Stepper -->
+                <div class="stepper">
+                    <div class="step active">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Glucose</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Meal</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Activity</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Wellness</div>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <form action="/add_record" method="POST" class="form-card">
+                    <div class="card-title">
+                        <svg viewBox="0 0 24 24" style="color:var(--primary);"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        Glucose Reading
+                    </div>
+                    <p class="card-subtitle">Enter your current blood glucose measurement</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Blood Glucose Value <span>*</span></label>
+                        <span class="form-hint">Enter the value shown on your glucometer or CGM</span>
+                        <div class="input-large-wrapper">
+                            <input type="number" name="glucose" class="input-large" placeholder="e.g. 126" required>
+                            <span class="input-unit">mg/dL</span>
+                        </div>
+                    </div>
+
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label class="form-label">Date <span>*</span></label>
+                            <div class="input-std">
+                                <input type="text" value="23-08-2026" style="border:none; outline:none; background:none; width:100%; font-size:14px; font-family:inherit;">
+                                <svg viewBox="0 0 24 24" style="color:var(--text-muted);"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h-14v11h14z"/></svg>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Time <span>*</span></label>
+                            <div class="input-std">
+                                <input type="text" value="08:50 AM" style="border:none; outline:none; background:none; width:100%; font-size:14px; font-family:inherit;">
+                                <svg viewBox="0 0 24 24" style="color:var(--text-muted);"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% set current_context = latest_record.meal_context if latest_record and latest_record.meal_context else 'Fasting' %}
+                    <div class="form-group">
+                        <label class="form-label">Measurement context <span>*</span></label>
+                        <span class="form-hint">When was this reading taken relative to meals?</span>
+                        <input type="hidden" name="meal_context" id="meal_context_input" value="{{ current_context }}" required>
+                        <div class="radio-grid" role="radiogroup" aria-label="Measurement context">
+                            <div class="radio-card {{ 'active' if current_context == 'Fasting' else '' }}" data-context="Fasting" role="radio" aria-checked="{{ 'true' if current_context == 'Fasting' else 'false' }}" tabindex="0">
+                                <div class="radio-title">Fasting</div>
+                                <div class="radio-desc">Before eating, 8+ hours since last meal</div>
+                            </div>
+                            <div class="radio-card {{ 'active' if current_context == 'Pre-meal' else '' }}" data-context="Pre-meal" role="radio" aria-checked="{{ 'true' if current_context == 'Pre-meal' else 'false' }}" tabindex="0">
+                                <div class="radio-title">Pre-meal</div>
+                                <div class="radio-desc">Just before eating</div>
+                            </div>
+                            <div class="radio-card {{ 'active' if current_context == 'Post-meal (1h)' else '' }}" data-context="Post-meal (1h)" role="radio" aria-checked="{{ 'true' if current_context == 'Post-meal (1h)' else 'false' }}" tabindex="0">
+                                <div class="radio-title">Post-meal (1h)</div>
+                                <div class="radio-desc">1 hour after starting meal</div>
+                            </div>
+                            <div class="radio-card {{ 'active' if current_context == 'Post-meal (2h)' else '' }}" data-context="Post-meal (2h)" role="radio" aria-checked="{{ 'true' if current_context == 'Post-meal (2h)' else 'false' }}" tabindex="0">
+                                <div class="radio-title">Post-meal (2h)</div>
+                                <div class="radio-desc">2 hours after starting meal</div>
+                            </div>
+                            <div class="radio-card {{ 'active' if current_context == 'Bedtime' else '' }}" data-context="Bedtime" role="radio" aria-checked="{{ 'true' if current_context == 'Bedtime' else 'false' }}" tabindex="0">
+                                <div class="radio-title">Bedtime</div>
+                                <div class="radio-desc">Before going to sleep</div>
+                            </div>
+                            <div class="radio-card {{ 'active' if current_context == 'Random' else '' }}" data-context="Random" role="radio" aria-checked="{{ 'true' if current_context == 'Random' else 'false' }}" tabindex="0">
+                                <div class="radio-title">Random</div>
+                                <div class="radio-desc">No specific meal context</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label class="form-label">Notes (optional)</label>
+                        <span class="form-hint">Any relevant context — felt unwell, unusual activity, etc.</span>
+                        <textarea class="input-std" placeholder="e.g. Felt slightly dizzy before reading..."></textarea>
+                    </div>
+
+                    <div class="info-alert">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <div>
+                            <div class="info-alert-title">This reading feeds the AI prediction pipeline</div>
+                            <div class="info-alert-text">This glucose reading and timestamp are securely saved to your health history and feed the active GRU deep-learning forecasting pipeline.</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 24px; text-align: right;">
+                        <button type="submit" style="background:var(--primary); color:#fff; border:none; padding:12px 24px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer;">Next Step →</button>
+                    </div>
+                
+    <div style="margin-top:20px; display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+        <div>
+            <label class="stat-label" style="display:block; margin-bottom:8px;">Stress (0-10)</label>
+            <input type="number" name="stress" class="input-std" min="0" max="10" placeholder="e.g. 5">
+        </div>
+        <div>
+            <label class="stat-label" style="display:block; margin-bottom:8px;">Sleep (hours)</label>
+            <input type="number" name="sleep" class="input-std" step="0.1" placeholder="e.g. 7.5">
+        </div>
+        <div>
+            <label class="stat-label" style="display:block; margin-bottom:8px;">Steps</label>
+            <input type="number" name="steps" class="input-std" placeholder="e.g. 8000">
+        </div>
+        <div>
+            <label class="stat-label" style="display:block; margin-bottom:8px;">Weight (kg)</label>
+            <input type="number" name="weight" class="input-std" step="0.1" placeholder="e.g. 70.5">
+        </div>
+        <div>
+            <label class="stat-label" style="display:block; margin-bottom:8px;">Mood (1-10)</label>
+            <input type="number" name="mood" class="input-std" min="1" max="10" placeholder="e.g. 8">
+        </div>
+        <div>
+            <label class="stat-label" style="display:block; margin-bottom:8px;">Exercise Duration (min)</label>
+            <input type="number" name="exercise_duration" class="input-std" placeholder="e.g. 30">
+        </div>
+    </div>
+
+</form>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script for radio selection logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const radioCards = document.querySelectorAll('.radio-card');
+            const hiddenInput = document.getElementById('meal_context_input');
+
+            function setMealContext(card) {
+                const contextVal = card.getAttribute('data-context') || card.querySelector('.radio-title').innerText.trim();
+                radioCards.forEach(c => {
+                    c.classList.remove('active');
+                    c.setAttribute('aria-checked', 'false');
+                });
+                card.classList.add('active');
+                card.setAttribute('aria-checked', 'true');
+                if (hiddenInput) {
+                    hiddenInput.value = contextVal;
+                }
+            }
+
+            radioCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    setMealContext(this);
+                });
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        setMealContext(this);
+                    }
+                });
+            });
+
+            // Form validation
+            const form = document.querySelector('form.form-card');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (!hiddenInput || !hiddenInput.value.trim()) {
+                        e.preventDefault();
+                        alert('Please select a Measurement context before submitting.');
+                    }
+                });
+            }
+        });
+    </script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Topbar Dropdown
+    const topAvatarBtn = document.getElementById("accountAvatarBtn");
+    const topDropdown = document.getElementById("accountDropdown");
+    
+    // 2. Sidebar Dropdown
+    const sidebarBtn = document.getElementById("sidebarAccountBtn");
+    const sidebarDropdown = document.getElementById("sidebarAccountDropdown");
+
+    if (topAvatarBtn && topDropdown) {
+        topAvatarBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (sidebarDropdown) {
+                sidebarDropdown.classList.remove("show");
+                if (sidebarBtn) sidebarBtn.setAttribute("aria-expanded", "false");
+            }
+            const isOpen = topDropdown.classList.toggle("show");
+            topAvatarBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+    }
+
+    if (sidebarBtn && sidebarDropdown) {
+        sidebarBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (topDropdown) {
+                topDropdown.classList.remove("show");
+                if (topAvatarBtn) topAvatarBtn.setAttribute("aria-expanded", "false");
+            }
+            const isOpen = sidebarDropdown.classList.toggle("show");
+            sidebarBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+    }
+
+    document.addEventListener("click", function(e) {
+        if (topAvatarBtn && topDropdown && !topAvatarBtn.contains(e.target) && !topDropdown.contains(e.target)) {
+            topDropdown.classList.remove("show");
+            topAvatarBtn.setAttribute("aria-expanded", "false");
+        }
+        if (sidebarBtn && sidebarDropdown && !sidebarBtn.contains(e.target) && !sidebarDropdown.contains(e.target)) {
+            sidebarDropdown.classList.remove("show");
+            sidebarBtn.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            if (topDropdown) {
+                topDropdown.classList.remove("show");
+                if (topAvatarBtn) topAvatarBtn.setAttribute("aria-expanded", "false");
+            }
+            if (sidebarDropdown) {
+                sidebarDropdown.classList.remove("show");
+                if (sidebarBtn) sidebarBtn.setAttribute("aria-expanded", "false");
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

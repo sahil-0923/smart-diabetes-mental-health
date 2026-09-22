@@ -1,0 +1,47 @@
+{
+    "model_version": "v1.0.0-gru-diatrend",
+    "dataset": "DiaTrend Longitudinal Dataset (54 subjects)",
+    "input_features": [
+        "glucose",
+        "steps",
+        "is_sleeping",
+        "hour_sin",
+        "hour_cos"
+    ],
+    "sequence_length": 36,
+    "prediction_horizons_min": [
+        30,
+        60
+    ],
+    "training_subjects_count": 37,
+    "validation_subjects_count": 8,
+    "test_subjects_count": 9,
+    "metrics": {
+        "30_min": {
+            "gru_mae": 4.36,
+            "gru_rmse": 5.49,
+            "baseline_mae": 5.46,
+            "baseline_rmse": 6.9
+        },
+        "60_min": {
+            "gru_mae": 5.1,
+            "gru_rmse": 6.42,
+            "baseline_mae": 7.68,
+            "baseline_rmse": 9.74
+        }
+    },
+    "scaler_means": [
+        142.8858891470718,
+        4.0150263186649635,
+        0.2962379569029506,
+        0.001554230242945793,
+        -0.010886536386743277
+    ],
+    "scaler_scales": [
+        17.987835467579707,
+        10.235246538818563,
+        0.4565972292951616,
+        0.7101042297387112,
+        0.7040106850118576
+    ]
+}

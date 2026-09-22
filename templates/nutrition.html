@@ -1,0 +1,3544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nutrition Intelligence | DiaMind AI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =====================================================
+           DIAMIND NUTRITION INTELLIGENCE
+        ===================================================== */
+
+        :root {
+            --green: #00d9a5;
+            --green-dark: #00a982;
+            --blue: #4f8cff;
+            --purple: #8b5cf6;
+            --orange: #f59e0b;
+            --red: #ff6675;
+            --cyan: #22d3ee;
+
+            --bg: #06100e;
+            --card: #0c1916;
+            --card2: #101f1b;
+
+            --border: rgba(255,255,255,.09);
+
+            --text: #f5f7fb;
+            --muted: #93a1b2;
+
+            --shadow:
+                0 20px 60px rgba(0,0,0,.25);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            color: var(--text);
+
+            font-family:
+                "Inter",
+                sans-serif;
+
+            background:
+
+                radial-gradient(
+                    circle at 5% 5%,
+                    rgba(0,217,165,.14),
+                    transparent 27%
+                ),
+
+                radial-gradient(
+                    circle at 95% 15%,
+                    rgba(79,140,255,.12),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 50% 100%,
+                    rgba(139,92,246,.08),
+                    transparent 35%
+                ),
+
+                var(--bg);
+
+            min-height: 100vh;
+        }
+
+
+        a {
+            color: inherit;
+        }
+
+
+        button,
+        select {
+            font-family: inherit;
+        }
+
+
+        .page {
+
+            width: min(
+                1400px,
+                94%
+            );
+
+            margin: auto;
+
+            padding:
+                24px 0 80px;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 22px;
+
+            font-weight: 800;
+        }
+
+
+        .brand-icon {
+
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,217,165,.2),
+                    rgba(79,140,255,.15)
+                );
+
+            border:
+                1px solid
+                rgba(0,217,165,.2);
+        }
+
+
+        .brand span {
+            color: var(--green);
+        }
+
+
+        .top-actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .top-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                10px 14px;
+
+            border-radius: 11px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                rgba(255,255,255,.04);
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition: .2s;
+        }
+
+
+        .top-btn:hover {
+
+            border-color:
+                rgba(0,217,165,.35);
+
+            background:
+                rgba(0,217,165,.07);
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding:
+                42px;
+
+            border-radius:
+                28px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    rgba(0,217,165,.12),
+                    rgba(79,140,255,.07)
+                );
+
+            box-shadow:
+                var(--shadow);
+
+            margin-bottom:
+                24px;
+        }
+
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 280px;
+            height: 280px;
+
+            right: -100px;
+            top: -130px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(0,217,165,.08);
+
+            filter:
+                blur(4px);
+        }
+
+
+        .hero-visual {
+
+            position: absolute;
+
+            right: 35px;
+            bottom: 20px;
+
+            width: 150px;
+            height: 150px;
+
+            border-radius: 35px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 82px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.06);
+
+            transform:
+                rotate(5deg);
+
+            opacity: .8;
+        }
+
+
+        .eyebrow {
+
+            color: var(--green);
+
+            font-size: 10px;
+
+            letter-spacing: 1.7px;
+
+            font-weight: 900;
+        }
+
+
+        .hero h1 {
+
+            margin:
+                12px 0;
+
+            max-width: 750px;
+
+            font-family:
+                "Poppins",
+                sans-serif;
+
+            font-size:
+                clamp(
+                    34px,
+                    5vw,
+                    54px
+                );
+
+            line-height:
+                1.05;
+        }
+
+
+        .hero p {
+
+            max-width: 760px;
+
+            color: var(--muted);
+
+            line-height: 1.75;
+
+            font-size: 14px;
+
+            margin: 0;
+        }
+
+
+        .profile-strip {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            margin-top: 22px;
+        }
+
+
+        .pill {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                8px 12px;
+
+            border-radius:
+                30px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            border:
+                1px solid var(--border);
+
+            color: #dce6ef;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           QUICK NAV
+        ===================================================== */
+
+        .quick-nav {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .quick-link {
+
+            padding:
+                13px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                rgba(255,255,255,.035);
+
+            border-radius:
+                13px;
+
+            color:
+                var(--muted);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition: .2s;
+        }
+
+
+        .quick-link:hover {
+
+            color: white;
+
+            border-color:
+                rgba(0,217,165,.25);
+
+            background:
+                rgba(0,217,165,.05);
+        }
+
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section {
+
+            margin-top: 30px;
+
+            scroll-margin-top: 20px;
+        }
+
+
+        .section-heading {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-end;
+
+            gap: 15px;
+
+            margin-bottom:
+                15px;
+        }
+
+
+        .section-heading h2 {
+
+            margin:
+                5px 0;
+
+            font-family:
+                "Poppins",
+                sans-serif;
+
+            font-size: 25px;
+        }
+
+
+        .section-heading p {
+
+            margin: 0;
+
+            color:
+                var(--muted);
+
+            font-size: 12px;
+        }
+
+
+        .section-badge {
+
+            padding:
+                7px 10px;
+
+            border-radius:
+                20px;
+
+            color:
+                var(--green);
+
+            background:
+                rgba(0,217,165,.06);
+
+            border:
+                1px solid
+                rgba(0,217,165,.12);
+
+            font-size:
+                9px;
+
+            font-weight:
+                800;
+        }
+
+
+        /* =====================================================
+           DAILY MEALS
+        ===================================================== */
+
+        .daily-plan {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    1fr
+                );
+
+            gap: 15px;
+        }
+
+
+        .meal-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height: 480px;
+
+            padding:
+                21px;
+
+            border-radius:
+                21px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.055),
+                    rgba(255,255,255,.022)
+                );
+
+            border:
+                1px solid var(--border);
+
+            transition:
+                transform .25s,
+                border-color .25s,
+                box-shadow .25s;
+        }
+
+
+        .meal-card:hover {
+
+            transform:
+                translateY(-5px);
+
+            border-color:
+                rgba(0,217,165,.25);
+
+            box-shadow:
+                0 18px 45px rgba(0,0,0,.22);
+        }
+
+
+        .meal-card.breakfast {
+
+            box-shadow:
+                inset 0 3px 0 var(--orange);
+        }
+
+
+        .meal-card.lunch {
+
+            box-shadow:
+                inset 0 3px 0 var(--green);
+        }
+
+
+        .meal-card.snack {
+
+            box-shadow:
+                inset 0 3px 0 var(--purple);
+        }
+
+
+        .meal-card.dinner {
+
+            box-shadow:
+                inset 0 3px 0 var(--blue);
+        }
+
+
+        .meal-top {
+
+            display: flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+        }
+
+
+        .meal-icon {
+
+            width: 51px;
+            height: 51px;
+
+            border-radius:
+                15px;
+
+            display: flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size:
+                27px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            border:
+                1px solid
+                rgba(255,255,255,.05);
+        }
+
+
+        .meal-time {
+
+            color:
+                var(--muted);
+
+            font-size:
+                9px;
+
+            letter-spacing:
+                1px;
+
+            font-weight:
+                800;
+        }
+
+
+        .meal-card h3 {
+
+            margin:
+                17px 0 6px;
+
+            font-size:
+                19px;
+        }
+
+
+        .meal-description {
+
+            color:
+                var(--muted);
+
+            font-size:
+                11px;
+
+            line-height:
+                1.55;
+
+            min-height:
+                36px;
+        }
+
+
+        /* =====================================================
+           DYNAMIC FOOD
+        ===================================================== */
+
+        .food-list {
+
+            display: grid;
+
+            gap:
+                8px;
+
+            margin-top:
+                16px;
+        }
+
+
+        .food-item {
+
+            padding:
+                11px;
+
+            border-radius:
+                12px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.035);
+
+            transition: .2s;
+        }
+
+
+        .food-item:hover {
+
+            background:
+                rgba(255,255,255,.055);
+
+            border-color:
+                rgba(255,255,255,.08);
+        }
+
+
+        .food-main {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-start;
+
+            gap: 10px;
+        }
+
+
+        .food-name {
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+            color:
+                #eef4f8;
+        }
+
+
+        .food-portion {
+
+            white-space:
+                nowrap;
+
+            color:
+                var(--green);
+
+            font-size:
+                9px;
+
+            font-weight:
+                900;
+        }
+
+
+        .food-meta {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            margin-top:
+                7px;
+        }
+
+
+        .macro {
+
+            padding:
+                4px 6px;
+
+            border-radius:
+                6px;
+
+            background:
+                rgba(255,255,255,.04);
+
+            color:
+                var(--muted);
+
+            font-size:
+                8px;
+        }
+
+
+        .empty-food {
+
+            padding:
+                18px 10px;
+
+            text-align:
+                center;
+
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            border:
+                1px dashed
+                rgba(255,255,255,.09);
+
+            border-radius:
+                11px;
+        }
+
+
+        .meal-tip {
+
+            margin-top:
+                13px;
+
+            padding:
+                11px;
+
+            border-radius:
+                11px;
+
+            background:
+                rgba(0,217,165,.05);
+
+            border:
+                1px solid
+                rgba(0,217,165,.09);
+
+            color:
+                #b7e9dc;
+
+            font-size:
+                9px;
+
+            line-height:
+                1.55;
+        }
+
+
+        /* =====================================================
+           DAILY SUMMARY
+        ===================================================== */
+
+        .summary-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    1fr
+                );
+
+            gap:
+                10px;
+        }
+
+
+        .summary-card {
+
+            padding:
+                18px;
+
+            border-radius:
+                17px;
+
+            background:
+                rgba(255,255,255,.04);
+
+            border:
+                1px solid var(--border);
+        }
+
+
+        .summary-icon {
+
+            font-size:
+                23px;
+        }
+
+
+        .summary-value {
+
+            margin-top:
+                8px;
+
+            font-size:
+                20px;
+
+            font-weight:
+                800;
+        }
+
+
+        .summary-label {
+
+            margin-top:
+                4px;
+
+            color:
+                var(--muted);
+
+            font-size:
+                9px;
+        }
+
+
+        /* =====================================================
+           PERSONALIZATION
+        ===================================================== */
+
+        .preference-card {
+
+            padding:
+                21px;
+
+            border-radius:
+                20px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid var(--border);
+        }
+
+
+        .preference-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    1fr
+                );
+
+            gap:
+                12px;
+        }
+
+
+        .preference {
+
+            padding:
+                15px;
+
+            border-radius:
+                13px;
+
+            background:
+                rgba(255,255,255,.035);
+        }
+
+
+        .preference label {
+
+            display:
+                block;
+
+            color:
+                var(--muted);
+
+            font-size:
+                9px;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .preference select {
+
+            width:
+                100%;
+
+            padding:
+                10px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                9px;
+
+            background:
+                #101e1a;
+
+            color:
+                white;
+
+            outline:
+                none;
+        }
+
+
+        /* =====================================================
+           PLATE
+        ===================================================== */
+
+        .plate-section {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                20px;
+        }
+
+
+        .plate-card {
+
+            padding:
+                25px;
+
+            border-radius:
+                20px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            border:
+                1px solid var(--border);
+        }
+
+
+        .plate {
+
+            width:
+                260px;
+
+            height:
+                260px;
+
+            margin:
+                15px auto;
+
+            border-radius:
+                50%;
+
+            overflow:
+                hidden;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            grid-template-rows:
+                1fr 1fr;
+
+            border:
+                8px solid
+                rgba(255,255,255,.10);
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.25);
+        }
+
+
+        .plate-veg,
+        .plate-protein,
+        .plate-carb {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                white;
+
+            font-weight:
+                800;
+        }
+
+
+        .plate-veg {
+
+            grid-row:
+                span 2;
+
+            background:
+                rgba(0,217,165,.55);
+
+            font-size:
+                12px;
+        }
+
+
+        .plate-protein {
+
+            background:
+                rgba(79,140,255,.55);
+
+            font-size:
+                11px;
+        }
+
+
+        .plate-carb {
+
+            background:
+                rgba(245,158,11,.60);
+
+            font-size:
+                11px;
+        }
+
+
+        .plate-info {
+
+            display:
+                grid;
+
+            gap:
+                9px;
+        }
+
+
+        .plate-row {
+
+            padding:
+                13px;
+
+            border-radius:
+                11px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            line-height:
+                1.55;
+        }
+
+
+        .plate-row strong {
+
+            display:
+                block;
+
+            color:
+                white;
+
+            margin-bottom:
+                4px;
+        }
+
+
+        /* =====================================================
+           DATASET
+        ===================================================== */
+
+        .database {
+
+            overflow:
+                hidden;
+
+            border-radius:
+                20px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                rgba(255,255,255,.04);
+        }
+
+
+        .database-header {
+
+            padding:
+                19px 22px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+        }
+
+
+        .database-title {
+
+            font-size:
+                13px;
+
+            font-weight:
+                800;
+        }
+
+
+        .database-status {
+
+            color:
+                var(--green);
+
+            font-size:
+                9px;
+
+            font-weight:
+                800;
+        }
+
+
+        .database-row {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                140px 1fr 1fr;
+
+            gap:
+                15px;
+
+            padding:
+                14px 22px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.05);
+
+            font-size:
+                10px;
+
+            line-height:
+                1.5;
+        }
+
+
+        .database-row:last-child {
+
+            border-bottom:
+                none;
+        }
+
+
+        .condition {
+
+            color:
+                var(--green);
+
+            font-weight:
+                800;
+        }
+
+
+        .include {
+
+            color:
+                #b8eadc;
+        }
+
+
+        .avoid {
+
+            color:
+                #ff9ca5;
+        }
+
+
+        /* =====================================================
+           TIPS
+        ===================================================== */
+
+        .tips-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    1fr
+                );
+
+            gap:
+                15px;
+        }
+
+
+        .tip {
+
+            padding:
+                18px;
+
+            border-radius:
+                16px;
+
+            background:
+                rgba(255,255,255,.04);
+
+            border:
+                1px solid var(--border);
+
+            transition:
+                .2s;
+        }
+
+
+        .tip:hover {
+
+            transform:
+                translateY(-3px);
+
+            border-color:
+                rgba(255,255,255,.14);
+        }
+
+
+        .tip-icon {
+
+            font-size:
+                25px;
+        }
+
+
+        .tip h3 {
+
+            margin:
+                10px 0 6px;
+
+            font-size:
+                14px;
+        }
+
+
+        .tip p {
+
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            line-height:
+                1.6;
+
+            margin:
+                0;
+        }
+
+
+        /* =====================================================
+           SAFETY
+        ===================================================== */
+
+        .safety {
+
+            margin-top:
+                25px;
+
+            padding:
+                19px;
+
+            border-radius:
+                16px;
+
+            background:
+                rgba(245,158,11,.06);
+
+            border:
+                1px solid
+                rgba(245,158,11,.14);
+
+            color:
+                #d9c59b;
+
+            font-size:
+                10px;
+
+            line-height:
+                1.7;
+        }
+
+
+        /* =====================================================
+           EMPTY / ERROR
+        ===================================================== */
+
+        .empty-plan {
+
+            padding:
+                25px;
+
+            text-align:
+                center;
+
+            border:
+                1px dashed
+                rgba(255,255,255,.12);
+
+            border-radius:
+                17px;
+
+            color:
+                var(--muted);
+
+            font-size:
+                11px;
+        }
+
+
+        .empty-plan strong {
+
+            display:
+                block;
+
+            color:
+                white;
+
+            margin-bottom:
+                7px;
+
+            font-size:
+                14px;
+        }
+
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        .toast {
+
+            position:
+                fixed;
+
+            right:
+                20px;
+
+            bottom:
+                20px;
+
+            padding:
+                13px 17px;
+
+            border-radius:
+                12px;
+
+            background:
+                #10221d;
+
+            border:
+                1px solid
+                rgba(0,217,165,.2);
+
+            color:
+                #dffcf5;
+
+            font-size:
+                10px;
+
+            opacity:
+                0;
+
+            transform:
+                translateY(15px);
+
+            pointer-events:
+                none;
+
+            transition:
+                .3s;
+
+            z-index:
+                9999;
+        }
+
+
+        .toast.show {
+
+            opacity:
+                1;
+
+            transform:
+                translateY(0);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media(max-width:1100px) {
+
+            .daily-plan {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+            }
+
+
+            .quick-nav {
+
+                grid-template-columns:
+                    repeat(
+                        3,
+                        1fr
+                    );
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+            }
+
+
+            .tips-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+        }
+
+
+        @media(max-width:800px) {
+
+            .hero {
+
+                padding:
+                    30px;
+            }
+
+
+            .hero-visual {
+
+                display:
+                    none;
+            }
+
+
+            .plate-section {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .preference-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .database-row {
+
+                grid-template-columns:
+                    1fr;
+            }
+        }
+
+
+        @media(max-width:600px) {
+
+            .page {
+
+                width:
+                    92%;
+            }
+
+
+            .topbar {
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .daily-plan {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .quick-nav {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+
+            .tips-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .hero h1 {
+
+                font-size:
+                    32px;
+            }
+
+
+            .plate {
+
+                width:
+                    220px;
+
+                height:
+                    220px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <!-- =================================================
+         TOPBAR
+    ================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🩸
+            </div>
+
+            <div>
+                DiaMind
+                <span>AI</span>
+            </div>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <a
+                href="{{ url_for('monitoring') }}"
+                class="top-btn"
+            >
+                📈 Monitoring
+            </a>
+
+
+            <a
+                href="{{ url_for('workouts') }}"
+                class="top-btn"
+            >
+                🏋️ Workouts
+            </a>
+
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="top-btn"
+            >
+                ← Dashboard
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-visual">
+            🥗
+        </div>
+
+
+        <div class="eyebrow">
+            PERSONALIZED NUTRITION INTELLIGENCE
+        </div>
+
+
+        <h1>
+            What should I eat today?
+        </h1>
+
+
+        <p>
+            DiaMind combines your health profile with
+            nutrition information from your project dataset
+            to organize practical meal ideas across
+            breakfast, lunch, snacks and dinner.
+        </p>
+
+
+        <div class="profile-strip">
+
+            <div class="pill">
+
+                🩸
+
+                {{ user.diabetes_type or "Profile not set" }}
+
+            </div>
+
+
+            <div class="pill">
+
+                🥗
+
+                {{ user.diet_preference or "Balanced" }}
+
+            </div>
+
+
+            <div class="pill">
+
+                {% if user.vegetarian %}
+
+                    🌱 Vegetarian
+
+                {% else %}
+
+                    🍗 Non-vegetarian
+
+                {% endif %}
+
+            </div>
+
+
+            {% if user.age %}
+
+            <div class="pill">
+
+                🎂 {{ user.age }} years
+
+            </div>
+
+            {% endif %}
+
+
+            {% if user.weight %}
+
+            <div class="pill">
+
+                ⚖️ {{ user.weight }} kg
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         QUICK NAV
+    ================================================== -->
+
+    <nav class="quick-nav">
+
+        <a
+            href="#daily-plan"
+            class="quick-link"
+        >
+            🍽️ Daily Plan
+        </a>
+
+
+        <a
+            href="#nutrition-summary"
+            class="quick-link"
+        >
+            📊 Nutrition
+        </a>
+
+
+        <a
+            href="#plate"
+            class="quick-link"
+        >
+            🥗 Plate
+        </a>
+
+
+        <a
+            href="#dataset"
+            class="quick-link"
+        >
+            🧠 AI Dataset
+        </a>
+
+
+        <a
+            href="#tips"
+            class="quick-link"
+        >
+            💡 Smart Tips
+        </a>
+
+    </nav>
+
+
+
+    <!-- =================================================
+         DAILY MEAL PLAN
+    ================================================== -->
+
+    <section
+        class="section"
+        id="daily-plan"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    TODAY'S MEAL PLAN
+                </div>
+
+                <h2>
+                    Breakfast → Lunch → Snack → Dinner
+                </h2>
+
+                <p>
+                    Your meal structure is generated from
+                    the nutrition data supplied by Flask.
+                </p>
+
+            </div>
+
+
+            <div class="section-badge">
+                AI PERSONALIZED
+            </div>
+
+        </div>
+
+
+        <div class="daily-plan">
+
+
+            <!-- =============================================
+                 BREAKFAST
+            ============================================== -->
+
+            {% set breakfast =
+                meals.get(
+                    "Breakfast",
+                    meal_lookup.get(
+                        "breakfast",
+                        {}
+                    )
+                )
+            %}
+
+
+            <article
+                class="meal-card breakfast"
+            >
+
+                <div class="meal-top">
+
+                    <div class="meal-icon">
+                        🌅
+                    </div>
+
+                    <div class="meal-time">
+                        MORNING
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Breakfast
+                </h3>
+
+
+                <div class="meal-description">
+
+                    {{
+                        breakfast.get(
+                            "description",
+                            "Start with a balanced combination of protein, fiber and an appropriate carbohydrate portion."
+                        )
+                    }}
+
+                </div>
+
+
+                <div class="food-list">
+
+
+                    {% set breakfast_foods =
+                        breakfast.get(
+                            "foods",
+                            []
+                        )
+                    %}
+
+
+                    {% if breakfast_foods %}
+
+                        {% for food in breakfast_foods %}
+
+                        <div class="food-item">
+
+                            <div class="food-main">
+
+                                <div class="food-name">
+                                    {{ food }}
+                                </div>
+
+                                <div class="food-portion">
+                                    Serving as planned
+                                </div>
+
+                            </div>
+
+                            <div class="food-meta">
+
+                                <span class="macro">
+                                    🌾 Balanced carbs
+                                </span>
+
+                                <span class="macro">
+                                    🌱 Fiber
+                                </span>
+
+                                <span class="macro">
+                                    💪 Protein
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="empty-food">
+
+                            No breakfast-specific foods
+                            were found in the current dataset.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div class="meal-tip">
+
+                    💡 Pair carbohydrate-containing foods
+                    with protein and fiber. Portion size should
+                    follow your individual diabetes-care plan.
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 LUNCH
+            ============================================== -->
+
+            {% set lunch =
+                meals.get(
+                    "Lunch",
+                    meal_lookup.get(
+                        "lunch",
+                        {}
+                    )
+                )
+            %}
+
+
+            <article
+                class="meal-card lunch"
+            >
+
+                <div class="meal-top">
+
+                    <div class="meal-icon">
+                        ☀️
+                    </div>
+
+                    <div class="meal-time">
+                        MIDDAY
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Lunch
+                </h3>
+
+
+                <div class="meal-description">
+
+                    {{
+                        lunch.get(
+                            "description",
+                            "Build lunch around vegetables, protein and an appropriate carbohydrate portion."
+                        )
+                    }}
+
+                </div>
+
+
+                <div class="food-list">
+
+
+                    {% set lunch_foods =
+                        lunch.get(
+                            "foods",
+                            []
+                        )
+                    %}
+
+
+                    {% if lunch_foods %}
+
+                        {% for food in lunch_foods %}
+
+                        <div class="food-item">
+
+                            <div class="food-main">
+
+                                <div class="food-name">
+                                    {{ food }}
+                                </div>
+
+                                <div class="food-portion">
+                                    Serving as planned
+                                </div>
+
+                            </div>
+
+                            <div class="food-meta">
+
+                                <span class="macro">
+                                    🥦 Vegetables
+                                </span>
+
+                                <span class="macro">
+                                    💪 Protein
+                                </span>
+
+                                <span class="macro">
+                                    🌾 Carbohydrate
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="empty-food">
+
+                            No lunch-specific foods
+                            were found in the current dataset.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div class="meal-tip">
+
+                    💡 A useful plate structure is vegetables
+                    as the largest portion, with protein and
+                    carbohydrate portions adjusted to your plan.
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 SNACK
+            ============================================== -->
+
+            {% set snack =
+                meals.get(
+                    "Snack",
+                    meal_lookup.get(
+                        "snack",
+                        {}
+                    )
+                )
+            %}
+
+
+            <article
+                class="meal-card snack"
+            >
+
+                <div class="meal-top">
+
+                    <div class="meal-icon">
+                        🍎
+                    </div>
+
+                    <div class="meal-time">
+                        BETWEEN MEALS
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Snack
+                </h3>
+
+
+                <div class="meal-description">
+
+                    {{
+                        snack.get(
+                            "description",
+                            "Choose a snack according to hunger, activity and your personal meal plan."
+                        )
+                    }}
+
+                </div>
+
+
+                <div class="food-list">
+
+
+                    {% set snack_foods =
+                        snack.get(
+                            "foods",
+                            []
+                        )
+                    %}
+
+
+                    {% if snack_foods %}
+
+                        {% for food in snack_foods %}
+
+                        <div class="food-item">
+
+                            <div class="food-main">
+
+                                <div class="food-name">
+                                    {{ food }}
+                                </div>
+
+                                <div class="food-portion">
+                                    Moderate portion
+                                </div>
+
+                            </div>
+
+                            <div class="food-meta">
+
+                                <span class="macro">
+                                    🍎 Whole food
+                                </span>
+
+                                <span class="macro">
+                                    🌱 Fiber
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="empty-food">
+
+                            No snack-specific foods
+                            were found in the current dataset.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div class="meal-tip">
+
+                    💡 Whole foods are generally a better
+                    default than sugar-sweetened drinks or
+                    highly processed snack foods.
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 DINNER
+            ============================================== -->
+
+            {% set dinner =
+                meals.get(
+                    "Dinner",
+                    meal_lookup.get(
+                        "dinner",
+                        {}
+                    )
+                )
+            %}
+
+
+            <article
+                class="meal-card dinner"
+            >
+
+                <div class="meal-top">
+
+                    <div class="meal-icon">
+                        🌙
+                    </div>
+
+                    <div class="meal-time">
+                        EVENING
+                    </div>
+
+                </div>
+
+
+                <h3>
+                    Dinner
+                </h3>
+
+
+                <div class="meal-description">
+
+                    {{
+                        dinner.get(
+                            "description",
+                            "Keep dinner balanced rather than making it predominantly refined carbohydrate."
+                        )
+                    }}
+
+                </div>
+
+
+                <div class="food-list">
+
+
+                    {% set dinner_foods =
+                        dinner.get(
+                            "foods",
+                            []
+                        )
+                    %}
+
+
+                    {% if dinner_foods %}
+
+                        {% for food in dinner_foods %}
+
+                        <div class="food-item">
+
+                            <div class="food-main">
+
+                                <div class="food-name">
+                                    {{ food }}
+                                </div>
+
+                                <div class="food-portion">
+                                    Serving as planned
+                                </div>
+
+                            </div>
+
+                            <div class="food-meta">
+
+                                <span class="macro">
+                                    🥦 Vegetables
+                                </span>
+
+                                <span class="macro">
+                                    💪 Protein
+                                </span>
+
+                                <span class="macro">
+                                    🌾 Controlled carbs
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="empty-food">
+
+                            No dinner-specific foods
+                            were found in the current dataset.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div class="meal-tip">
+
+                    💡 Keep the meal balanced and avoid
+                    making dinner mostly refined carbohydrate.
+                    Your individual meal plan should take priority.
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         NUTRITION SUMMARY
+    ================================================== -->
+
+    <section
+        class="section"
+        id="nutrition-summary"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    NUTRITION OVERVIEW
+                </div>
+
+                <h2>
+                    Your daily nutrition framework
+                </h2>
+
+                <p>
+                    General guidance generated from your
+                    current profile and nutrition dataset.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-grid">
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🍽️
+                </div>
+
+                <div class="summary-value">
+                    4
+                </div>
+
+                <div class="summary-label">
+                    Planned eating windows
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🥦
+                </div>
+
+                <div class="summary-value">
+                    High
+                </div>
+
+                <div class="summary-label">
+                    Vegetable priority
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    💪
+                </div>
+
+                <div class="summary-value">
+                    Daily
+                </div>
+
+                <div class="summary-label">
+                    Protein awareness
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    💧
+                </div>
+
+                <div class="summary-value">
+                    Water
+                </div>
+
+                <div class="summary-label">
+                    Preferred beverage
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         PERSONALIZATION
+    ================================================== -->
+
+    <section
+        class="section"
+        id="personalization"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    PERSONALIZATION
+                </div>
+
+                <h2>
+                    Your nutrition profile
+                </h2>
+
+                <p>
+                    These values come from your DiaMind profile.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="preference-card">
+
+            <div class="preference-grid">
+
+
+                <div class="preference">
+
+                    <label>
+                        Diabetes profile
+                    </label>
+
+                    <select disabled>
+
+                        <option>
+
+                            {{
+                                user.diabetes_type
+                                or
+                                "General wellness"
+                            }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="preference">
+
+                    <label>
+                        Diet preference
+                    </label>
+
+                    <select disabled>
+
+                        <option>
+
+                            {{
+                                user.diet_preference
+                                or
+                                "Balanced"
+                            }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="preference">
+
+                    <label>
+                        Food style
+                    </label>
+
+                    <select disabled>
+
+                        {% if user.vegetarian %}
+
+                            <option>
+                                Vegetarian
+                            </option>
+
+                        {% else %}
+
+                            <option>
+                                Non-vegetarian
+                            </option>
+
+                        {% endif %}
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         DIABETES PLATE
+    ================================================== -->
+
+    <section
+        class="section"
+        id="plate"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    BUILD YOUR PLATE
+                </div>
+
+                <h2>
+                    Balanced Diabetes Plate
+                </h2>
+
+                <p>
+                    A simple visual framework for meal planning.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="plate-section">
+
+
+            <div class="plate-card">
+
+                <div class="plate">
+
+                    <div class="plate-veg">
+
+                        🥦
+
+                        <br><br>
+
+                        ½
+
+                        <br>
+
+                        Non-starchy
+                        vegetables
+
+                    </div>
+
+
+                    <div class="plate-protein">
+
+                        🍗
+
+                        <br>
+
+                        ¼ Protein
+
+                    </div>
+
+
+                    <div class="plate-carb">
+
+                        🌾
+
+                        <br>
+
+                        ¼ Quality
+                        carbohydrate
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="plate-card">
+
+                <div class="plate-info">
+
+
+                    <div class="plate-row">
+
+                        <strong>
+                            🥦 Half — Non-starchy vegetables
+                        </strong>
+
+                        Examples include leafy greens,
+                        cucumber, tomato, cauliflower,
+                        broccoli and other non-starchy
+                        vegetables.
+
+                    </div>
+
+
+                    <div class="plate-row">
+
+                        <strong>
+                            💪 Quarter — Protein
+                        </strong>
+
+                        Options can include eggs, fish,
+                        chicken, tofu, beans, lentils or
+                        other suitable protein foods.
+
+                    </div>
+
+
+                    <div class="plate-row">
+
+                        <strong>
+                            🌾 Quarter — Carbohydrate
+                        </strong>
+
+                        Use an appropriate portion of
+                        whole grains, legumes, starchy
+                        vegetables or other carbohydrate
+                        foods.
+
+                    </div>
+
+
+                    <div class="plate-row">
+
+                        <strong>
+                            💧 Beverage
+                        </strong>
+
+                        Water is a simple default beverage.
+                        Sugar-sweetened drinks should generally
+                        be limited.
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         CONNECTED DATASET
+    ================================================== -->
+
+    <section
+        class="section"
+        id="dataset"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    CONNECTED DATA
+                </div>
+
+                <h2>
+                    Nutrition Knowledge Base
+                </h2>
+
+                <p>
+                    These recommendations are loaded from
+                    your project's diet.csv.
+                </p>
+
+            </div>
+
+
+            {% if recommendations %}
+
+                <div class="section-badge">
+                    DATA CONNECTED
+                </div>
+
+            {% else %}
+
+                <div class="section-badge">
+                    NO DATA
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="database">
+
+
+            <div class="database-header">
+
+                <div class="database-title">
+                    Diet dataset
+                </div>
+
+                <div class="database-status">
+
+                    {% if recommendations %}
+
+                        ● Connected
+
+                    {% else %}
+
+                        ● Empty
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if recommendations %}
+
+
+                {% for item in recommendations %}
+
+                <div class="database-row">
+
+
+                    <div class="condition">
+
+                        {{
+                            item.condition
+                            or
+                            "General"
+                        }}
+
+                    </div>
+
+
+                    <div class="include">
+
+                        <strong>
+                            ✓ Prefer
+                        </strong>
+
+                        {% if item.include %}
+
+                            {{ item.include }}
+
+                        {% elif item.food %}
+
+                            {{ item.food }}
+
+                        {% else %}
+
+                            Dataset does not specify
+                            included foods.
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="avoid">
+
+                        <strong>
+                            ⚠ Limit / Avoid
+                        </strong>
+
+                        {% if item.avoid %}
+
+                            {{ item.avoid }}
+
+                        {% else %}
+
+                            No avoid list supplied.
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <div class="empty-plan">
+
+                    <strong>
+                        Nutrition dataset not connected yet
+                    </strong>
+
+                    Make sure this file exists:
+
+                    <br><br>
+
+                    <code>
+                        data/diet.csv
+                    </code>
+
+                    <br><br>
+
+                    Your current simple format can be:
+
+                    <br>
+
+                    <code>
+                        Condition,Include,Avoid
+                    </code>
+
+                </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         SMART NUTRITION TIPS
+    ================================================== -->
+
+    <section
+        class="section"
+        id="tips"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    DAILY NUTRITION INTELLIGENCE
+                </div>
+
+                <h2>
+                    Smart eating principles
+                </h2>
+
+                <p>
+                    Practical education for your dashboard.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="tips-grid">
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    🥦
+                </div>
+
+                <h3>
+                    Make vegetables prominent
+                </h3>
+
+                <p>
+                    Include plenty of non-starchy vegetables
+                    as part of balanced meals.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    💪
+                </div>
+
+                <h3>
+                    Include protein
+                </h3>
+
+                <p>
+                    Protein foods can help create a more
+                    balanced meal alongside carbohydrate
+                    and fiber-rich foods.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    🌾
+                </div>
+
+                <h3>
+                    Watch carbohydrate portions
+                </h3>
+
+                <p>
+                    Carbohydrate quantity and timing matter,
+                    particularly for people using insulin.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    🍎
+                </div>
+
+                <h3>
+                    Prefer whole fruit
+                </h3>
+
+                <p>
+                    Whole fruit generally provides more fiber
+                    than juice. Fruit still contributes
+                    carbohydrate.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    💧
+                </div>
+
+                <h3>
+                    Hydrate smartly
+                </h3>
+
+                <p>
+                    Water is a simple default. Sugar-sweetened
+                    drinks can add substantial carbohydrate.
+                </p>
+
+            </div>
+
+
+            <div class="tip">
+
+                <div class="tip-icon">
+                    🕐
+                </div>
+
+                <h3>
+                    Keep your routine consistent
+                </h3>
+
+                <p>
+                    Regular meal patterns can make it easier
+                    to understand how meals relate to your
+                    glucose records.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         ADVANCED DATASET PREVIEW
+    ================================================== -->
+
+    {% if nutrition_plan %}
+
+    <section
+        class="section"
+        id="advanced-data"
+    >
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    NUTRITION ENGINE
+                </div>
+
+                <h2>
+                    Food intelligence
+                </h2>
+
+                <p>
+                    Additional nutrition fields are displayed
+                    automatically when your CSV contains them.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="database">
+
+
+            <div class="database-header">
+
+                <div class="database-title">
+                    Advanced food information
+                </div>
+
+                <div class="database-status">
+                    AUTO-DETECTED
+                </div>
+
+            </div>
+
+
+            {% set advanced_items =
+                nutrition_plan.get(
+                    "recommendations",
+                    []
+                )
+            %}
+
+
+            {% set shown_advanced = false %}
+
+
+            {% for item in advanced_items %}
+
+                {% if item.food %}
+
+                    {% set shown_advanced = true %}
+
+
+                    <div class="database-row">
+
+
+                        <div class="condition">
+
+                            {{ item.food }}
+
+                        </div>
+
+
+                        <div class="include">
+
+                            {% if item.serving_grams %}
+
+                                ⚖️
+                                {{ item.serving_grams }} g
+
+                            {% endif %}
+
+                            {% if item.calories %}
+
+                                · 🔥
+                                {{ item.calories }} kcal
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="avoid">
+
+                            {% if item.carbs %}
+
+                                🌾
+                                {{ item.carbs }} g carbs
+
+                            {% endif %}
+
+                            {% if item.protein %}
+
+                                · 💪
+                                {{ item.protein }} g protein
+
+                            {% endif %}
+
+                            {% if item.fiber %}
+
+                                · 🌱
+                                {{ item.fiber }} g fiber
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {% if not shown_advanced %}
+
+            <div class="empty-plan">
+
+                Your current diet.csv uses the simple:
+
+                <br><br>
+
+                <code>
+                    Condition,Include,Avoid
+                </code>
+
+                <br><br>
+
+                When you upgrade the dataset with
+                Food, Serving_grams, Calories, Carbs_g,
+                Protein_g and Fiber_g, DiaMind can display
+                those values here automatically.
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+
+    <!-- =================================================
+         SAFETY
+    ================================================== -->
+
+    <section class="safety">
+
+        <strong>
+            ⚠️ Important health note
+        </strong>
+
+        <br><br>
+
+        DiaMind AI provides educational nutrition guidance
+        and project-based recommendations. It does not
+        replace an individualized medical nutrition plan.
+
+        <br><br>
+
+        People with diabetes may have different carbohydrate,
+        calorie and medication requirements. People using
+        insulin should follow the carbohydrate-counting and
+        insulin plan provided by their diabetes-care team.
+
+        <br><br>
+
+        Do not use this page to independently calculate or
+        change insulin doses. People with kidney disease,
+        pregnancy, allergies or other medical conditions may
+        require additional dietary modifications.
+
+    </section>
+
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
+
+    <footer
+        style="
+            text-align:center;
+            padding:40px 0 0;
+            color:#657485;
+            font-size:10px;
+        "
+    >
+
+        <strong>
+            DiaMind AI
+        </strong>
+
+        · Smart Diabetes & Mental Wellness
+
+        <br>
+
+        Personalized insights · Nutrition · Activity · Wellness
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+>
+    Nutrition plan loaded.
+</div>
+
+
+
+<script>
+
+    /* =====================================================
+       DIAMIND NUTRITION UI
+    ===================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const cards =
+                document.querySelectorAll(
+                    ".meal-card"
+                );
+
+
+            cards.forEach(
+                function (card) {
+
+                    card.addEventListener(
+                        "click",
+                        function () {
+
+                            cards.forEach(
+                                function (other) {
+
+                                    if (
+                                        other !== card
+                                    ) {
+
+                                        other.style.transform =
+                                            "";
+
+                                    }
+
+                                }
+                            );
+
+
+                            card.style.transform =
+                                "translateY(-6px)";
+
+
+                            setTimeout(
+                                function () {
+
+                                    card.style.transform =
+                                        "";
+
+                                },
+                                350
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /* =============================================
+               ACTIVE QUICK NAV
+            ============================================== */
+
+            const links =
+                document.querySelectorAll(
+                    ".quick-link"
+                );
+
+
+            links.forEach(
+                function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            links.forEach(
+                                function (item) {
+
+                                    item.style.borderColor =
+                                        "";
+
+                                }
+                            );
+
+
+                            this.style.borderColor =
+                                "rgba(0,217,165,.35)";
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /* =============================================
+               TOAST
+            ============================================== */
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+
+            if (toast) {
+
+                setTimeout(
+                    function () {
+
+                        toast.classList.add(
+                            "show"
+                        );
+
+
+                        setTimeout(
+                            function () {
+
+                                toast.classList.remove(
+                                    "show"
+                                );
+
+                            },
+                            2200
+                        );
+
+                    },
+                    500
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

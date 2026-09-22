@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabetesAI - AI Forecast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Base styles */
+        :root {
+            --bg-body: #f8f9fc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-bg: #eff6ff;
+            --purple: #8b5cf6;
+            --purple-bg: #f3e8ff;
+            --demo-yellow: #fef3c7;
+            --demo-yellow-text: #b45309;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        svg { width: 16px; height: 16px; fill: currentColor; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+        .logo-section { padding: 24px 20px; display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 32px; height: 32px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .logo-text h1 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .logo-text p { font-size: 11px; color: var(--text-muted); }
+        
+        .nav-group { margin-top: 16px; }
+        .nav-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 20px; margin-bottom: 8px; }
+        .nav-item { display: flex; align-items: center; padding: 10px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; margin: 2px 12px; border-radius: 8px; gap: 12px; }
+        .nav-item:hover { background: #f8fafc; color: var(--text-main); }
+        .nav-item.active { background: var(--purple-bg); color: var(--purple); }
+        
+        .badge-demo, .demo-badge { background: var(--demo-yellow); color: var(--demo-yellow-text); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;}
+        .badge-demo { margin-left: auto; }
+        .badge-new { background: #dcfce7; color: #15803d; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
+        .badge-today { color: var(--primary); font-size: 11px; font-weight: 600; margin-left: auto; background: var(--primary-bg); padding: 2px 6px; border-radius: 4px;}
+        
+        .user-profile-sidebar { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .user-info h4 { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .user-info p { font-size: 12px; color: var(--text-muted); }
+        
+        .logout-btn { display: flex; align-items: center; gap: 8px; color: #dc2626; font-size: 14px; font-weight: 600; padding: 0 20px 20px; text-decoration: none;}
+        
+        /* Main wrapper & Topbar */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: space-between; flex-shrink: 0; }
+        
+        
+        
+        
+        .top-avatar { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+
+        /* Content area */
+        .content-scroll { flex: 1; overflow-y: auto; padding: 32px; }
+        .content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+        
+        .header-section { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;}
+        .header-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 12px;}
+        .header-subtitle { color: var(--text-muted); font-size: 14px; }
+        
+        /* Grid Layout */
+        .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        
+        /* Cards */
+        .card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); padding: 24px; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .card-title { font-size: 16px; font-weight: 600; }
+        .card-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .stat-box { background: #f8fafc; border-radius: 8px; padding: 16px; text-align: center; }
+        .stat-box-value { font-size: 24px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+        .stat-box-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        
+        .alert-box { background: #fff1f2; border-left: 4px solid #e11d48; padding: 16px; border-radius: 4px; margin-bottom: 16px; }
+        .alert-title { font-size: 14px; font-weight: 600; color: #be123c; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;}
+        .alert-text { font-size: 13px; color: #9f1239; line-height: 1.5; }
+
+        .info-box { background: var(--purple-bg); border-left: 4px solid var(--purple); padding: 16px; border-radius: 4px; }
+        .info-title { font-size: 14px; font-weight: 600; color: #6d28d9; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;}
+        .info-text { font-size: 13px; color: #5b21b6; line-height: 1.5; }
+    
+        /* Topbar & Account Menu */
+        .topbar { height: 64px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; justify-content: flex-end; flex-shrink: 0; }
+        .account-menu-container { position: relative; display: flex; align-items: center; }
+        .top-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; border: none; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; outline: none; }
+        .top-avatar:hover, .top-avatar:focus-visible { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .account-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 240px; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); z-index: 1000; overflow: hidden; animation: fadeInDropdown 0.15s ease-out; }
+        .account-dropdown.show { display: block; }
+        .account-dropdown-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: #f8fafc; }
+        .dropdown-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .dropdown-user-details { overflow: hidden; }
+        .dropdown-user-name { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dropdown-user-email { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .account-dropdown-divider { height: 1px; background: var(--border); }
+        .account-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; color: #dc2626; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.15s ease; width: 100%; border: none; background: transparent; cursor: pointer; text-align: left; box-sizing: border-box; }
+        .account-dropdown-item:hover, .account-dropdown-item:focus-visible { background: #fef2f2; }
+        @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    
+        /* Sidebar Account Menu */
+        .sidebar-account-container { position: relative; margin-top: auto; width: 100%; }
+        .user-profile-sidebar { width: 100%; padding: 16px 20px; border-top: 1px solid var(--border); border-left: none; border-right: none; border-bottom: none; background: transparent; display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left; transition: background 0.15s ease; box-sizing: border-box; }
+        .user-profile-sidebar:hover, .user-profile-sidebar:focus-visible { background: #f8fafc; }
+        .user-profile-sidebar .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .user-profile-sidebar .user-info { flex: 1; overflow: hidden; }
+        .user-profile-sidebar .user-info h4 { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+        .user-profile-sidebar .user-info p { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 2px 0 0 0; }
+        .sidebar-chevron { color: var(--text-muted); transition: transform 0.15s ease; flex-shrink: 0; }
+        .user-profile-sidebar[aria-expanded="true"] .sidebar-chevron { transform: rotate(180deg); }
+        .sidebar-account-dropdown { display: none; position: absolute; bottom: calc(100% + 8px); left: 12px; right: 12px; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.08); z-index: 1000; overflow: hidden; animation: fadeInDropdown 0.15s ease-out; }
+        .sidebar-account-dropdown.show { display: block; }
+
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <!-- Logo -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            </div>
+            <div class="logo-text">
+                <h1>DiabetesAI</h1>
+                <p>Early-Warning System</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-group">
+            <div class="nav-label">OVERVIEW</div>
+            <a href="/dashboard" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zM13 4v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
+                Dashboard
+            </a>
+            <a href="/monitoring" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zM7 11h5v5H7z"/></svg>
+                Daily Check-in
+                <span class="badge-today">Today</span>
+            </a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">GLUCOSE & AI</div>
+            <a href="/monitoring" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                Glucose Monitor
+            </a>
+            <a href="/forecast" class="nav-item active">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                AI Forecast
+                
+            </a>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                Risk Trends
+            </a>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg>
+                What-If Simulator
+                <span class="badge-new">NEW</span>
+            </a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">WELLNESS</div>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                Mental Wellness
+            </a>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95 0 5.52 4.48 10 10 10 3.31 0 6.23-1.61 8.06-4.09l-2.6-1.53C16.17 17.98 14.21 19 12 19z"/></svg>
+                Health Trends
+            </a>
+        </div>
+
+        <div class="sidebar-account-container">
+    <button id="sidebarAccountBtn" class="user-profile-sidebar" aria-haspopup="true" aria-expanded="false" aria-label="User Account Profile" title="{{ user.name if user else 'Account' }}">
+        <div class="avatar">{{ user.name[:2].upper() if user and user.name else 'PT' }}</div>
+        <div class="user-info">
+            <h4>{{ user.name if user else 'User' }}</h4>
+            <p>{{ user.email if user and user.email else '' }}</p>
+        </div>
+        <svg class="sidebar-chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
+    <div id="sidebarAccountDropdown" class="sidebar-account-dropdown" role="menu" aria-label="Sidebar Account options">
+        <div class="account-dropdown-header">
+            <div class="dropdown-avatar">{{ user.name[:2].upper() if user and user.name else 'PT' }}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">{{ user.name if user and user.name else 'User' }}</div>
+                <div class="dropdown-user-email">{{ user.email if user and user.email else '' }}</div>
+            </div>
+        </div>
+        <div class="account-dropdown-divider"></div>
+        <a href="/logout" class="account-dropdown-item" role="menuitem">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Logout
+        </a>
+    </div>
+</div>
+</aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+<div class="account-menu-container">
+    <button id="accountAvatarBtn" class="top-avatar" aria-haspopup="true" aria-expanded="false" aria-label="User Account Menu" title="{{ user.name if user else 'Account' }}">
+        {{ user.name[:2].upper() if user and user.name else "PT" }}
+    </button>
+    <div id="accountDropdown" class="account-dropdown" role="menu" aria-label="Account options">
+        <div class="account-dropdown-header">
+            <div class="dropdown-avatar">{{ user.name[:2].upper() if user and user.name else "PT" }}</div>
+            <div class="dropdown-user-details">
+                <div class="dropdown-user-name">{{ user.name if user and user.name else "User" }}</div>
+                <div class="dropdown-user-email">{{ user.email if user and user.email else "" }}</div>
+            </div>
+        </div>
+        <div class="account-dropdown-divider"></div>
+        <a href="/logout" class="account-dropdown-item" role="menuitem">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Logout
+        </a>
+    </div>
+</div>
+</header>
+
+        <!-- Scrollable content -->
+        <main class="content-scroll">
+            <div class="content">
+                
+                <div class="header-section">
+                    <div>
+                        <h2 class="header-title">
+                            AI Glucose Forecast
+                            
+                        </h2>
+                        <p class="header-subtitle">GRU Time-Series Prediction Model — 60 minute horizon</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Main Chart Area -->
+                    <div class="card" style="display:flex; flex-direction:column;">
+                        <div class="card-header" style="margin-bottom:0;">
+                            <div>
+                                <h3 class="card-title">Continuous Predictive Horizon</h3>
+                                <p class="card-subtitle">Showing actual readings up to now, followed by the AI's 60-minute forward trajectory.</p>
+                            </div>
+                        </div>
+                        <div style="flex:1; min-height: 350px; position: relative; margin-top: 20px;">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                        <div style="display:flex; justify-content:center; gap:20px; font-size:12px; font-weight:500; margin-top:20px;">
+                            <div style="display:flex; align-items:center; gap:6px; color:var(--primary);">
+                                <span style="width:12px; height:3px; background:var(--primary); border-radius:2px; display:inline-block;"></span> Actual History
+                            </div>
+                            <div style="display:flex; align-items:center; gap:6px; color:var(--purple);">
+                                <span style="width:12px; height:3px; border-top:2px dashed var(--purple); display:inline-block; margin-top:2px;"></span> GRU Forecast
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side Stats & Alerts -->
+                    <div style="display:flex; flex-direction:column; gap:24px;">
+                        <div class="card">
+                            <h3 class="card-title" style="margin-bottom:20px;">Forecast Insights</h3>
+                            
+                            <div class="stat-grid">
+                                <div class="stat-box">
+                                    <div class="stat-box-value" style="color: #e11d48;">185</div>
+                                    <div class="stat-box-label">Peak Expected (mg/dL)</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-box-value">42</div>
+                                    <div class="stat-box-label">Min to Peak (mins)</div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert-box">
+                                <div class="alert-title">
+                                    <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                                    Approaching High Threshold
+                                </div>
+                                <div class="alert-text">The AI model predicts your glucose will cross 170 mg/dL within the next 45 minutes due to your recent meal.</div>
+                            </div>
+                            
+                            <div class="info-box">
+                                <div class="info-title">
+                                    <svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                    Multimodal Impact
+                                </div>
+                                <div class="info-text">Prediction includes data from: CGM (every 5m), Step Count (last 2h), and Heart Rate (average 82 bpm).</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('forecastChart').getContext('2d');
+        
+        // Custom plugin to draw threshold lines
+        const thresholdPlugin = {
+            id: 'thresholdLines',
+            beforeDraw(chart) {
+                const {ctx, chartArea: {left, right}, scales: {y}} = chart;
+                
+                const drawLine = (yValue, color, label) => {
+                    const yPos = y.getPixelForValue(yValue);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.setLineDash([4, 4]);
+                    ctx.moveTo(left, yPos);
+                    ctx.lineTo(right, yPos);
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = color;
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = color;
+                    ctx.font = '10px Inter';
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText(label, right, yPos - 4);
+                    ctx.restore();
+                };
+                drawLine(170, '#f59e0b', 'High threshold');
+                drawLine(70, '#ef4444', 'Low threshold');
+            }
+        };
+
+        // Create gradients
+        let gradBlue = ctx.createLinearGradient(0, 0, 0, 350);
+        gradBlue.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+        gradBlue.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+        
+        let gradPurple = ctx.createLinearGradient(0, 0, 0, 350);
+        gradPurple.addColorStop(0, 'rgba(139, 92, 246, 0.3)');
+        gradPurple.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
+
+        // Generates minute labels for the past 60 mins and future 60 mins
+        
+    fetch('/api/forecast/predict')
+        .then(r => r.json())
+        .then(data => {
+            if (data.available && data.input_records) {
+                const actual = data.input_records;
+                const p30 = data.prediction_30min;
+                const p60 = data.prediction_60min;
+                
+                const labels = [];
+                const mockActual = [];
+                const mockForecast = [];
+                
+                for(let i=0; i<actual.length; i++) {
+                    labels.push(`T-${(actual.length - i)*5}`);
+                    mockActual.push(actual[i]);
+                    mockForecast.push(null);
+                }
+                labels.push('T+30');
+                mockActual.push(null);
+                mockForecast.push(p30);
+                
+                labels.push('T+60');
+                mockActual.push(null);
+                mockForecast.push(p60);
+                
+                // fill the gap so lines connect (optional)
+                mockForecast[actual.length-1] = actual[actual.length-1];
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Actual Glucose',
+                                data: mockActual,
+                                borderColor: '#3b82f6',
+                                backgroundColor: gradBlue,
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                label: 'GRU Forecast',
+                                data: mockForecast,
+                                borderColor: '#8b5cf6',
+                                backgroundColor: gradPurple,
+                                borderWidth: 3,
+                                borderDash: [6, 6],
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                pointHoverRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, position: 'top', align: 'end' } },
+                        scales: {
+                            y: { grid: { borderDash: [4, 4], color: '#e2e8f0' }, min: 50, max: 250 },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            } else {
+                ctx.canvas.parentElement.innerHTML = '<p style="padding:20px;">Insufficient Data to generate AI Forecast.</p>';
+            }
+        });
+
+    }
+
+    if (sidebarBtn && sidebarDropdown) {
+        sidebarBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (topDropdown) {
+                topDropdown.classList.remove("show");
+                if (topAvatarBtn) topAvatarBtn.setAttribute("aria-expanded", "false");
+            }
+            const isOpen = sidebarDropdown.classList.toggle("show");
+            sidebarBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+    }
+
+    document.addEventListener("click", function(e) {
+        if (topAvatarBtn && topDropdown && !topAvatarBtn.contains(e.target) && !topDropdown.contains(e.target)) {
+            topDropdown.classList.remove("show");
+            topAvatarBtn.setAttribute("aria-expanded", "false");
+        }
+        if (sidebarBtn && sidebarDropdown && !sidebarBtn.contains(e.target) && !sidebarDropdown.contains(e.target)) {
+            sidebarDropdown.classList.remove("show");
+            sidebarBtn.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            if (topDropdown) {
+                topDropdown.classList.remove("show");
+                if (topAvatarBtn) topAvatarBtn.setAttribute("aria-expanded", "false");
+            }
+            if (sidebarDropdown) {
+                sidebarDropdown.classList.remove("show");
+                if (sidebarBtn) sidebarBtn.setAttribute("aria-expanded", "false");
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

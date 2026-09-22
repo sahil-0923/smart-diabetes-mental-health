@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Smart Diabetes & Mental Health Monitoring System
+    </title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="/" class="logo">
+
+            <span class="logo-icon">
+                +
+            </span>
+
+            <span>
+                Smart<span class="logo-highlight">Health</span>
+            </span>
+
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#how">
+                How it works
+            </a>
+
+            <a href="#emergency">
+                Emergency
+            </a>
+
+            <a href="/login"
+               class="login-btn">
+                Login
+            </a>
+
+            <a href="/register"
+               class="start-btn">
+                Get Started
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-background"></div>
+
+    <div class="container hero-container">
+
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+
+                <span class="pulse"></span>
+
+                AI-Powered Preventive Healthcare
+
+            </div>
+
+
+            <h1>
+
+                Understand your health.
+
+                <span>
+                    Improve your future.
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                A smart healthcare platform that combines
+                diabetes risk monitoring, mental wellness,
+                personalized recommendations and emergency
+                healthcare assistance in one place.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a href="/register"
+                   class="primary-btn">
+
+                    Start Your Health Journey
+                    →
+
+                </a>
+
+
+                <a href="#features"
+                   class="secondary-btn">
+
+                    Explore Platform
+
+                </a>
+
+            </div>
+
+
+            <div class="hero-stats">
+
+                <div>
+
+                    <strong>
+                        AI
+                    </strong>
+
+                    <span>
+                        Health Intelligence
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        24/7
+                    </strong>
+
+                    <span>
+                        Health Monitoring
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        360°
+                    </strong>
+
+                    <span>
+                        Wellness View
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HEALTH DASHBOARD PREVIEW -->
+
+        <div class="hero-dashboard">
+
+
+            <div class="dashboard-window">
+
+
+                <div class="window-top">
+
+                    <div class="window-dots">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                    <small>
+                        Health Dashboard
+                    </small>
+
+                </div>
+
+
+                <div class="dashboard-heading">
+
+                    <div>
+
+                        <small>
+                            GOOD MORNING
+                        </small>
+
+                        <h3>
+                            Your Health Overview
+                        </h3>
+
+                    </div>
+
+
+                    <div class="health-status">
+                        ● Healthy
+                    </div>
+
+                </div>
+
+
+                <div class="health-score">
+
+                    <div class="score-ring">
+
+                        <div>
+
+                            <strong>
+                                82
+                            </strong>
+
+                            <span>
+                                /100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            Overall Health Score
+                        </small>
+
+                        <h4>
+                            Looking Good
+                        </h4>
+
+                        <p>
+                            Your health indicators are
+                            currently trending positively.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="health-cards">
+
+
+                    <div class="health-card">
+
+                        <div class="health-icon">
+                            🩸
+                        </div>
+
+                        <small>
+                            Glucose
+                        </small>
+
+                        <strong>
+                            104
+                        </strong>
+
+                        <span>
+                            mg/dL
+                        </span>
+
+                    </div>
+
+
+                    <div class="health-card">
+
+                        <div class="health-icon">
+                            🧠
+                        </div>
+
+                        <small>
+                            Stress
+                        </small>
+
+                        <strong>
+                            42
+                        </strong>
+
+                        <span>
+                            /100
+                        </span>
+
+                    </div>
+
+
+                    <div class="health-card">
+
+                        <div class="health-icon">
+                            😴
+                        </div>
+
+                        <small>
+                            Sleep
+                        </small>
+
+                        <strong>
+                            7.2
+                        </strong>
+
+                        <span>
+                            hours
+                        </span>
+
+                    </div>
+
+
+                    <div class="health-card">
+
+                        <div class="health-icon">
+                            🏃
+                        </div>
+
+                        <small>
+                            Activity
+                        </small>
+
+                        <strong>
+                            7,842
+                        </strong>
+
+                        <span>
+                            steps
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="trend-section">
+
+                    <div class="trend-header">
+
+                        <strong>
+                            Health Trend
+                        </strong>
+
+                        <span>
+                            Last 7 days
+                        </span>
+
+                    </div>
+
+
+                    <div class="trend-bars">
+
+                        <span style="height:35%"></span>
+                        <span style="height:48%"></span>
+                        <span style="height:43%"></span>
+                        <span style="height:58%"></span>
+                        <span style="height:63%"></span>
+                        <span style="height:72%"></span>
+                        <span style="height:88%"></span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section id="features"
+         class="features-section">
+
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <span>
+                ONE PLATFORM
+            </span>
+
+            <h2>
+
+                Everything you need to
+                <span>
+                    understand your health.
+                </span>
+
+            </h2>
+
+            <p>
+
+                From diabetes monitoring to mental wellness,
+                our platform brings your most important health
+                insights together.
+
+            </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🩸
+                </div>
+
+                <h3>
+                    Diabetes Intelligence
+                </h3>
+
+                <p>
+
+                    AI-powered diabetes risk assessment,
+                    glucose tracking and health trend
+                    analysis.
+
+                </p>
+
+                <a href="#">
+                    Explore →
+                </a>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🧠
+                </div>
+
+                <h3>
+                    Mental Wellness
+                </h3>
+
+                <p>
+
+                    Track mood, stress, sleep and emotional
+                    wellbeing through intelligent monitoring.
+
+                </p>
+
+                <a href="#">
+                    Explore →
+                </a>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🥗
+                </div>
+
+                <h3>
+                    Smart Nutrition
+                </h3>
+
+                <p>
+
+                    Personalized diet recommendations
+                    based on your health profile and goals.
+
+                </p>
+
+                <a href="#">
+                    Explore →
+                </a>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🏋️
+                </div>
+
+                <h3>
+                    Adaptive Workouts
+                </h3>
+
+                <p>
+
+                    Intelligent workout recommendations
+                    designed around your fitness level.
+
+                </p>
+
+                <a href="#">
+                    Explore →
+                </a>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🏥
+                </div>
+
+                <h3>
+                    Nearby Hospitals
+                </h3>
+
+                <p>
+
+                    Find nearby healthcare facilities
+                    using location-aware hospital search.
+
+                </p>
+
+                <a href="#">
+                    Explore →
+                </a>
+
+            </div>
+
+
+            <div class="feature-card emergency-feature">
+
+                <div class="feature-icon">
+                    🚑
+                </div>
+
+                <h3>
+                    Emergency Assistance
+                </h3>
+
+                <p>
+
+                    Quickly access emergency services,
+                    nearby hospitals and emergency contacts.
+
+                </p>
+
+                <a href="#">
+                    Emergency →
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- HOW IT WORKS -->
+
+<section id="how"
+         class="how-section">
+
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <span>
+                HOW IT WORKS
+            </span>
+
+            <h2>
+
+                Your health journey,
+                <span>
+                    simplified.
+                </span>
+
+            </h2>
+
+        </div>
+
+
+        <div class="steps">
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <h3>
+                    Create your profile
+                </h3>
+
+                <p>
+
+                    Build your personal health profile
+                    with your basic information.
+
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <h3>
+                    Track your health
+                </h3>
+
+                <p>
+
+                    Record glucose, mood, activity,
+                    sleep and other health metrics.
+
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <h3>
+                    Get intelligent insights
+                </h3>
+
+                <p>
+
+                    Understand your trends and receive
+                    personalized recommendations.
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- EMERGENCY -->
+
+<section id="emergency"
+         class="emergency-section">
+
+
+    <div class="container">
+
+
+        <div class="emergency-box">
+
+            <div>
+
+                <span>
+                    🚨 EMERGENCY ASSISTANCE
+                </span>
+
+                <h2>
+                    Help when you need it most.
+                </h2>
+
+                <p>
+
+                    Quickly access emergency services,
+                    nearby hospitals and location assistance.
+
+                </p>
+
+            </div>
+
+
+            <a href="/login"
+               class="emergency-btn">
+
+                Open Emergency Center →
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="container">
+
+        <div class="footer-content">
+
+            <div>
+
+                <div class="logo">
+
+                    <span class="logo-icon">
+                        +
+                    </span>
+
+                    Smart<span class="logo-highlight">
+                        Health
+                    </span>
+
+                </div>
+
+                <p>
+
+                    Smart Diabetes and Mental Health
+                    Monitoring System.
+
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <p>
+                    © 2026 Smart Health Monitoring System
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+</body>
+
+</html>

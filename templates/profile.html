@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Health Profile | Smart Health AI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at 10% 0%,
+                    rgba(0, 217, 165, .13),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(79, 140, 255, .10),
+                    transparent 30%
+                ),
+                #06100e;
+            color: #f5f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .page {
+            width: min(1200px, 94%);
+            margin: auto;
+            padding: 30px 0 70px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #00d9a5;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            padding: 11px 17px;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.05);
+            border-radius: 12px;
+        }
+
+        .hero {
+            padding: 38px;
+            border-radius: 26px;
+            border: 1px solid rgba(255,255,255,.1);
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,217,165,.12),
+                    rgba(79,140,255,.06)
+                );
+            margin-bottom: 25px;
+        }
+
+        .hero small {
+            color: #00d9a5;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin: 12px 0;
+        }
+
+        .hero p {
+            color: #9ca7b8;
+            line-height: 1.7;
+            max-width: 750px;
+        }
+
+        .section {
+            margin-top: 20px;
+            padding: 28px;
+            border-radius: 22px;
+            background: rgba(255,255,255,.045);
+            border: 1px solid rgba(255,255,255,.09);
+        }
+
+        .section h2 {
+            margin-top: 0;
+        }
+
+        .section-description {
+            color: #8995a7;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 12px;
+            color: #aeb8c8;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(0,0,0,.20);
+            color: white;
+            border-radius: 12px;
+            padding: 13px;
+            outline: none;
+        }
+
+        select option {
+            background: #101817;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #00d9a5;
+        }
+
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .choice {
+            border: 1px solid rgba(255,255,255,.09);
+            background: rgba(255,255,255,.035);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .choice label {
+            cursor: pointer;
+        }
+
+        .warning {
+            margin-top: 20px;
+            padding: 17px;
+            border-radius: 14px;
+            background: rgba(255,184,77,.06);
+            border: 1px solid rgba(255,184,77,.15);
+            color: #d6c49d;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .save-area {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 13px;
+            background: #00d9a5;
+            color: #03100d;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        @media(max-width:700px) {
+
+            .grid,
+            .radio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 25px;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .topbar {
+                gap: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="topbar">
+
+        <div class="logo">
+            Smart<span>Health</span> AI
+        </div>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="back"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <small>PERSONAL HEALTH PROFILE</small>
+
+        <h1>
+            Build your health intelligence profile
+        </h1>
+
+        <p>
+            The information below allows the system to
+            personalize nutrition, exercise and safety
+            guidance. Only enter information you are
+            comfortable providing.
+        </p>
+
+    </section>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('profile') }}"
+    >
+
+
+        <!-- BASIC -->
+
+        <section class="section">
+
+            <h2>👤 Basic Information</h2>
+
+            <p class="section-description">
+                Basic information helps the system understand
+                your general health and fitness context.
+            </p>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        name="name"
+                        value="{{ user.name or '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Age</label>
+
+                    <input
+                        type="number"
+                        name="age"
+                        value="{{ user.age or '' }}"
+                        min="1"
+                        max="120"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Gender</label>
+
+                    <select name="gender">
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option
+                            value="Male"
+                            {% if user.gender == "Male" %}selected{% endif %}
+                        >
+                            Male
+                        </option>
+
+                        <option
+                            value="Female"
+                            {% if user.gender == "Female" %}selected{% endif %}
+                        >
+                            Female
+                        </option>
+
+                        <option
+                            value="Other"
+                            {% if user.gender == "Other" %}selected{% endif %}
+                        >
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Height (cm)</label>
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        name="height"
+                        value="{{ user.height or '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Current Weight (kg)</label>
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        name="weight"
+                        value="{{ user.weight or '' }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DIABETES -->
+
+        <section class="section">
+
+            <h2>🩸 Diabetes Profile</h2>
+
+            <p class="section-description">
+                This information changes the safety and
+                recommendation logic.
+            </p>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>Diabetes Type</label>
+
+                    <select name="diabetes_type">
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option
+                            value="Type 1"
+                            {% if user.diabetes_type == "Type 1" %}selected{% endif %}
+                        >
+                            Type 1 Diabetes
+                        </option>
+
+                        <option
+                            value="Type 2"
+                            {% if user.diabetes_type == "Type 2" %}selected{% endif %}
+                        >
+                            Type 2 Diabetes
+                        </option>
+
+                        <option
+                            value="Prediabetes"
+                            {% if user.diabetes_type == "Prediabetes" %}selected{% endif %}
+                        >
+                            Prediabetes
+                        </option>
+
+                        <option
+                            value="Unknown"
+                            {% if user.diabetes_type == "Unknown" %}selected{% endif %}
+                        >
+                            Not sure / monitoring risk
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Diagnosis Status</label>
+
+                    <select name="diagnosis_status">
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option>Diagnosed</option>
+                        <option>Prediabetes</option>
+                        <option>Monitoring Risk</option>
+                        <option>Not Diagnosed</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Are you currently using insulin?
+                    </label>
+
+                    <select name="uses_insulin">
+
+                        <option value="no">
+                            No
+                        </option>
+
+                        <option
+                            value="yes"
+                            {% if user.uses_insulin %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Current diabetes medications
+                    </label>
+
+                    <textarea
+                        name="medications"
+                        placeholder="Optional — enter medication names only if you want them considered in your profile."
+                    >{{ user.medications or '' }}</textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- COMPLICATIONS -->
+
+        <section class="section">
+
+            <h2>🛡️ Safety & Complications</h2>
+
+            <p class="section-description">
+                These answers are used to prevent the system
+                from recommending inappropriate exercise.
+                They do not replace a medical assessment.
+            </p>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>Retinopathy</label>
+
+                    <select name="retinopathy">
+
+                        <option value="no">No / Unknown</option>
+
+                        <option
+                            value="yes"
+                            {% if user.retinopathy %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Neuropathy</label>
+
+                    <select name="neuropathy">
+
+                        <option value="no">No / Unknown</option>
+
+                        <option
+                            value="yes"
+                            {% if user.neuropathy %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Kidney Disease</label>
+
+                    <select name="kidney_disease">
+
+                        <option value="no">No / Unknown</option>
+
+                        <option
+                            value="yes"
+                            {% if user.kidney_disease %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Heart / Cardiovascular Disease</label>
+
+                    <select name="heart_disease">
+
+                        <option value="no">No / Unknown</option>
+
+                        <option
+                            value="yes"
+                            {% if user.heart_disease %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>Current Foot Problem / Open Wound</label>
+
+                    <select name="foot_problem">
+
+                        <option value="no">
+                            No / Unknown
+                        </option>
+
+                        <option
+                            value="yes"
+                            {% if user.foot_problem %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="warning">
+
+                ⚠️ If you have a current foot wound, severe
+                retinopathy, significant cardiovascular symptoms,
+                or another condition that makes exercise unsafe,
+                don't use this page to self-clear yourself for
+                intense exercise. Seek appropriate clinical advice.
+
+            </div>
+
+        </section>
+
+
+        <!-- FITNESS -->
+
+        <section class="section">
+
+            <h2>🏋️ Fitness Profile</h2>
+
+            <p class="section-description">
+                This determines how aggressively the system
+                progresses your exercise plan.
+            </p>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>Current Activity Level</label>
+
+                    <select name="activity_level">
+
+                        <option value="beginner">
+                            Beginner / Inactive
+                        </option>
+
+                        <option value="intermediate">
+                            Intermediate
+                        </option>
+
+                        <option value="advanced">
+                            Advanced
+                        </option>
+
+                        <option value="athlete">
+                            Athlete
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Exercise Minutes / Week</label>
+
+                    <input
+                        type="number"
+                        name="exercise_minutes_week"
+                        min="0"
+                        value="{{ user.exercise_minutes_week or 0 }}"
+                    >
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>
+                        Resistance-training sessions / week
+                    </label>
+
+                    <input
+                        type="number"
+                        name="resistance_sessions_week"
+                        min="0"
+                        value="{{ user.resistance_sessions_week or 0 }}"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- NUTRITION -->
+
+        <section class="section">
+
+            <h2>🥗 Nutrition Profile</h2>
+
+            <p class="section-description">
+                This helps the nutrition engine produce
+                more practical food recommendations.
+            </p>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>Diet Preference</label>
+
+                    <select name="diet_preference">
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option>Indian</option>
+                        <option>South Indian</option>
+                        <option>Low-Carbohydrate</option>
+                        <option>Mediterranean-style</option>
+                        <option>Balanced</option>
+                        <option>Other</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>Vegetarian?</label>
+
+                    <select name="vegetarian">
+
+                        <option value="no">
+                            No
+                        </option>
+
+                        <option
+                            value="yes"
+                            {% if user.vegetarian %}selected{% endif %}
+                        >
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label>Food Allergies / Restrictions</label>
+
+                    <textarea
+                        name="food_allergies"
+                        placeholder="Example: peanuts, lactose, shellfish..."
+                    >{{ user.food_allergies or '' }}</textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="save-area">
+
+            <button type="submit">
+                Save Health Profile →
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

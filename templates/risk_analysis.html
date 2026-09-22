@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Analysis - DiabetesAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-body: #f8f9fc; --bg-card: #ffffff; --border: #e2e8f0; --text-main: #1e293b; --text-muted: #64748b; --primary: #3b82f6; --primary-bg: #eff6ff; --purple: #8b5cf6; --purple-bg: #f3e8ff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        svg { width: 16px; height: 16px; fill: currentColor; }
+        
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+        .logo-section { padding: 24px 20px; display: flex; align-items: center; gap: 12px; }
+        .nav-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 20px; margin-bottom: 8px; margin-top: 24px;}
+        .nav-item { display: flex; align-items: center; padding: 10px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; margin: 2px 12px; border-radius: 8px; gap: 12px; }
+        .nav-item:hover { background: #f8fafc; color: var(--text-main); }
+        .nav-item.active { background: var(--primary-bg); color: var(--primary); }
+        .user-profile-sidebar { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .user-info h4 { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .user-info p { font-size: 12px; color: var(--text-muted); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 72px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; flex-shrink: 0; }
+        .content-scroll { flex: 1; overflow-y: auto; padding: 40px; }
+        
+        .header-section { margin-bottom: 32px; }
+        .header-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .header-subtitle { color: var(--text-muted); font-size: 15px; }
+        
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+        .icon-box { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .icon-kidney { background: #fffbeb; color: #d97706; }
+        .icon-cv { background: #fef2f2; color: #ef4444; }
+        .icon-eye { background: #eff6ff; color: #3b82f6; }
+        
+        .card-header h3 { font-size: 18px; font-weight: 600; }
+        .card-header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        
+        .risk-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; padding: 6px 16px; border-radius: 16px; border: 1px solid; margin-bottom: 20px; }
+        .risk-high { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .risk-moderate { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .risk-low { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+        .risk-missing { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+        
+        .section-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+        .input-factors { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .factor-tag { background: #f8fafc; border: 1px solid var(--border); color: var(--text-main); font-size: 13px; padding: 6px 12px; border-radius: 20px; }
+        
+        .explanation-box { background: #f8fafc; border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; font-size: 14px; line-height: 1.5; color: var(--text-main); margin-bottom: 16px; }
+        .footer-note { font-size: 12px; font-style: italic; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; }
+        
+        .disclaimer-alert { background: #fffbeb; border: 1px solid #fde68a; padding: 16px 24px; border-radius: 12px; color: #92400e; font-size: 14px; font-weight: 500; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-section">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:var(--primary)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.51c-.58-.81-1.41-1.35-2.4-1.54-.78-.15-1.5-.78-1.5-1.54V13c0-.55-.45-1-1-1h-2v-2h2c.55 0 1-.45 1-1V8h2c1.1 0 2-.9 2-2v-.18C19.4 6.7 20 9.27 20 12c0 1.25-.26 2.44-.7 3.51z"/></svg>
+            <span style="font-weight:700;font-size:18px;letter-spacing:-0.5px;">DiabetesAI</span>
+        </div>
+        
+        <div class="nav-label">Main</div>
+        <a href="/dashboard" class="nav-item">Dashboard</a>
+        <a href="/monitoring" class="nav-item">Monitoring</a>
+        <a href="/risk-analysis" class="nav-item active">Risk Analysis</a>
+        
+        <div class="user-profile-sidebar">
+            <div class="avatar">{{ user.name[0] }}</div>
+            <div class="user-info">
+                <h4>{{ user.name }}</h4>
+                <p>Authenticated</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="topbar">
+            <h2 style="font-size:16px; font-weight:600;">Complication Risk Analysis</h2>
+        </div>
+        
+        <div class="content-scroll">
+            <div class="header-section">
+                <h2 class="header-title">Full Risk Analysis</h2>
+                <p class="header-subtitle">Comprehensive breakdown of your long-term complication risk factors.</p>
+            </div>
+            
+            <div class="card" id="kidney-card">
+                <div class="card-header">
+                    <div class="icon-box icon-kidney">
+                        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M16 2.01L14.22 0H9.78L8 2.01V4H4v16h16V4h-4zM11 18H9v-2h2v2zm0-4H9V8h2v6zm4 4h-2v-2h2v2zm0-4h-2V8h2v6z"/></svg>
+                    </div>
+                    <div>
+                        <h3>Kidney Complication</h3>
+                        <p>Renal function indicator (KDIGO Guideline-based)</p>
+                    </div>
+                </div>
+                <div class="risk-badge risk-missing" id="kidney-badge">Loading...</div>
+                <div class="section-label">Included Input Factors</div>
+                <div class="input-factors" id="kidney-inputs"><span class="factor-tag">Loading...</span></div>
+                <div class="explanation-box" id="kidney-exp">Loading...</div>
+                <div class="footer-note">Risk assessment — not a medical diagnosis.</div>
+            </div>
+            
+            <div class="card" id="cv-card">
+                <div class="card-header">
+                    <div class="icon-box icon-cv">
+                        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <div>
+                        <h3>Cardiovascular Risk</h3>
+                        <p>Heart & vessel indicator</p>
+                    </div>
+                </div>
+                <div class="risk-badge risk-missing" id="cv-badge">Loading...</div>
+                <div class="section-label">Included Input Factors</div>
+                <div class="input-factors" id="cv-inputs"><span class="factor-tag">Loading...</span></div>
+                <div class="explanation-box" id="cv-exp">Loading...</div>
+                <div class="footer-note">Risk assessment — not a medical diagnosis.</div>
+            </div>
+            
+            <div class="card" id="eye-card">
+                <div class="card-header">
+                    <div class="icon-box icon-eye">
+                        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </div>
+                    <div>
+                        <h3>Eye Complication</h3>
+                        <p>Diabetic retinopathy indicator (ADA Guideline-based)</p>
+                    </div>
+                </div>
+                <div class="risk-badge risk-missing" id="eye-badge">Loading...</div>
+                <div class="section-label">Included Input Factors</div>
+                <div class="input-factors" id="eye-inputs"><span class="factor-tag">Loading...</span></div>
+                <div class="explanation-box" id="eye-exp">Loading...</div>
+                <div class="footer-note">Risk assessment — not a medical diagnosis.</div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        function setupCard(endpoint, badgeId, inputsId, expId) {
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(data => {
+                    const badge = document.getElementById(badgeId);
+                    if (data.status === 'success') {
+                        badge.innerText = data.risk + " Estimated Future Risk";
+                        if (data.level === 'high') badge.className = 'risk-badge risk-high';
+                        else if (data.level === 'moderate') badge.className = 'risk-badge risk-moderate';
+                        else if (data.level === 'low') badge.className = 'risk-badge risk-low';
+                        else badge.className = 'risk-badge risk-missing';
+                        
+                        document.getElementById(expId).innerText = data.explanation;
+                        
+                        const factors = data.inputs.split(' • ').filter(f => f.trim() !== '' && f.trim() !== 'Missing');
+                        if (factors.length > 0) {
+                            document.getElementById(inputsId).innerHTML = factors.map(f => `<span class="factor-tag">${f}</span>`).join('');
+                        } else {
+                            document.getElementById(inputsId).innerHTML = '<span class="factor-tag" style="background:#f1f5f9; color:#94a3b8; font-style:italic;">No input factors available</span>';
+                        }
+                    }
+                }).catch(err => console.error(err));
+        }
+        
+        setupCard('/api/complications/kidney', 'kidney-badge', 'kidney-inputs', 'kidney-exp');
+        setupCard('/api/complications/cardiovascular', 'cv-badge', 'cv-inputs', 'cv-exp');
+        setupCard('/api/complications/eye', 'eye-badge', 'eye-inputs', 'eye-exp');
+    });
+    </script>
+</body>
+</html>
